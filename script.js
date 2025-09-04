@@ -72,7 +72,7 @@ function calcularCostos(){
 
 
 
-function evaluar(){
+function estimarEvaluacion(){
 
     let sumaTP = parseFloat(sumaTPelement.value);
     let sumaTN = parseFloat(sumaTNelement.value);
@@ -100,10 +100,6 @@ function evaluar(){
     let cantidadNegative = parseFloat(cantidadNegativeElement.value);
 
 
-    // Generar instancias
-
-    let instanciasPositive = generateCorrelatedBernoulli(m1AccPositive, m2AccPositive, correlacionPositive, cantidadPositive);
-    let instanaciasNegative = generateCorrelatedBernoulli(1-m1AccNegative, 1-m2AccNegative, correlacionNegative, cantidadNegative);
 
 
     // Calcular confusiónes
@@ -117,6 +113,126 @@ function evaluar(){
     let cantidadModelo2TN = 0;
     let cantidadModelo2FN = 0;
     let cantidadModelo2FP = 0;
+    
+
+
+
+    // Versión sin generar instancias calculando la probabilidad conjunta y multiplicando por la cantidad
+
+    let probabilidadesPositive = computeJointBernoulliProbabilities(m1AccPositive, m2AccPositive, correlacionPositive);
+    let probabilidadesNegative = computeJointBernoulliProbabilities(1-m1AccNegative, 1-m2AccNegative, correlacionNegative);
+
+    if(tipoFusionador.value == 'or'){
+        cantidadSistemaTP = probabilidadesPositive[1] + probabilidadesPositive[2] + probabilidadesPositive[3];
+        cantidadSistemaTN = probabilidadesNegative[0];
+        cantidadSistemaFN = probabilidadesPositive[0];
+        cantidadSistemaFP = probabilidadesNegative[1] + probabilidadesNegative[2] + probabilidadesNegative[3];
+    }else if(tipoFusionador.value == 'and'){
+        cantidadSistemaTP = probabilidadesPositive[3];
+        cantidadSistemaTN =  + probabilidadesNegative[0] + probabilidadesNegative[1] + probabilidadesNegative[2];
+        cantidadSistemaFN = probabilidadesPositive[0] + probabilidadesPositive[1] + probabilidadesPositive[2];
+        cantidadSistemaFP = probabilidadesNegative[3];
+    }else{
+        throw new Error("Fusionador no soportado. Usar 'or' o 'and'.");
+    }
+
+    cantidadSistemaTP = cantidadSistemaTP * cantidadPositive;
+    cantidadSistemaTN = cantidadSistemaTN * cantidadNegative;
+    cantidadSistemaFN = cantidadSistemaFN * cantidadPositive;
+    cantidadSistemaFP = cantidadSistemaFP * cantidadNegative;
+
+    cantidadModelo2TP = cantidadPositive * m2AccPositive;
+    cantidadModelo2TN = cantidadNegative * m2AccNegative;
+    cantidadModelo2FN = cantidadPositive * (1 - m2AccPositive);
+    cantidadModelo2FP = cantidadNegative * (1 - m2AccNegative);
+
+
+
+
+    // Evaluación del sistema
+
+    evalSistemaElement.value = 
+    cantidadSistemaFN.toFixed(0)+'*'+costoPositive.toFixed(2)+' + '+
+    cantidadSistemaFP.toFixed(0)+'*'+costoNegative.toFixed(2)+'  =  '+
+    (cantidadSistemaFN*costoPositive+
+    cantidadSistemaFP*costoNegative).toFixed(2);
+
+
+    // Evaluación modelo 2
+
+    sumaEvalModelo2Element.value = 
+    cantidadModelo2TP.toFixed(0)+'*'+sumaTP.toFixed(2)+' + '+
+    cantidadModelo2TN.toFixed(0)+'*'+sumaTN.toFixed(2)+' + '+
+    cantidadModelo2FN.toFixed(0)+'*'+sumaFN.toFixed(2)+' + '+
+    cantidadModelo2FP.toFixed(0)+'*'+sumaFP.toFixed(2)+'  =  '+
+    (cantidadModelo2TP * sumaTP + 
+    cantidadModelo2TN * sumaTN + 
+    cantidadModelo2FN * sumaFN + 
+    cantidadModelo2FP * sumaFP).toFixed(2);
+
+    restaEvalModelo2Element.value = 
+    cantidadModelo2TP.toFixed(0)+'*'+restaTP.toFixed(2)+' + '+
+    cantidadModelo2TN.toFixed(0)+'*'+restaTN.toFixed(2)+' + '+
+    cantidadModelo2FN.toFixed(0)+'*'+restaFN.toFixed(2)+' + '+
+    cantidadModelo2FP.toFixed(0)+'*'+restaFP.toFixed(2)+'  =  '+
+    (cantidadModelo2TP * restaTP + 
+    cantidadModelo2TN * restaTN + 
+    cantidadModelo2FN * restaFN + 
+    cantidadModelo2FP * restaFP).toFixed(2);
+}
+
+
+
+
+function generarInstancias(){
+
+    let sumaTP = parseFloat(sumaTPelement.value);
+    let sumaTN = parseFloat(sumaTNelement.value);
+    let sumaFN = parseFloat(sumaFNelement.value);
+    let sumaFP = parseFloat(sumaFPelement.value);
+
+    let restaTP = parseFloat(restaTPelement.value);
+    let restaTN = parseFloat(restaTNelement.value);
+    let restaFN = parseFloat(restaFNelement.value);
+    let restaFP = parseFloat(restaFPelement.value);
+
+    let costoPositive = parseFloat(costoPositiveElement.value);
+    let costoNegative = parseFloat(costoNegativeElement.value);
+
+    let m1AccPositive = parseFloat(m1AccPositiveElement.value);
+    let m1AccNegative = parseFloat(m1AccNegativeElement.value);
+
+    let m2AccPositive = parseFloat(m2AccPositiveElement.value);
+    let m2AccNegative = parseFloat(m2AccNegativeElement.value);
+
+    let correlacionPositive = correlacionPositiveElement.value;
+    let correlacionNegative = correlacionNegativeElement.value;
+
+    let cantidadPositive = parseFloat(cantidadPositiveElement.value);
+    let cantidadNegative = parseFloat(cantidadNegativeElement.value);
+
+
+
+
+    // Calcular confusiónes
+
+    let cantidadSistemaTP = 0;
+    let cantidadSistemaTN = 0;
+    let cantidadSistemaFN = 0;
+    let cantidadSistemaFP = 0;
+
+    let cantidadModelo2TP = 0;
+    let cantidadModelo2TN = 0;
+    let cantidadModelo2FN = 0;
+    let cantidadModelo2FP = 0;
+    
+    
+
+    // Version generando instancias
+
+    let instanciasPositive = generateCorrelatedBernoulli(m1AccPositive, m2AccPositive, correlacionPositive, cantidadPositive);
+    let instanciasNegative = generateCorrelatedBernoulli(1-m1AccNegative, 1-m2AccNegative, correlacionNegative, cantidadNegative);
+
 
 
     for(const [predM1, predM2] of instanciasPositive){
@@ -149,7 +265,7 @@ function evaluar(){
         cantidadSistemaFN = cantidadSistemaFN;
     }
 
-    for(const [predM1, predM2] of instanaciasNegative){
+    for(const [predM1, predM2] of instanciasNegative){
         // Confusiónes modelo 2
         if(predM2 == 1){
             cantidadModelo2FP = cantidadModelo2FP + 1;
@@ -178,38 +294,6 @@ function evaluar(){
         cantidadSistemaTN = cantidadSistemaTN;
         cantidadSistemaFP = cantidadSistemaFP;
     }
-
-    
-    // < ----------------------------------------------------------- >
-
-    // Versión sin generar instancias y calculando cuantas instancias espero
-    // de cada clase de confusión según la probabilidad y el fusionador
-
-    // if(tipoFusionador.value == 'or'){
-    //     cantidadSistemaTP = 1 - ((1 - m1AccPositive) * (1 - m2AccPositive));
-    //     cantidadSistemaTN = m1AccNegative * m2AccNegative;
-    //     cantidadSistemaFN = 1 - cantidadSistemaTP;
-    //     cantidadSistemaFP = 1 - cantidadSistemaTN;
-    // }else if(tipoFusionador.value == 'and'){
-    //     cantidadSistemaTP = m1AccPositive * m2AccPositive;
-    //     cantidadSistemaTN = 1 - ((1 - m1AccNegative) * (1 - m2AccNegative));
-    //     cantidadSistemaFN = 1 - cantidadSistemaTP;
-    //     cantidadSistemaFP = 1 - cantidadSistemaTN;
-    // }else{
-    //     throw new Error("Fusionador no soportado. Usar 'or' o 'and'.");
-    // }
-
-    // cantidadSistemaTP = cantidadSistemaTP * cantidadPositive;
-    // cantidadSistemaTN = cantidadSistemaTN * cantidadNegative;
-    // cantidadSistemaFN = cantidadSistemaFN * cantidadPositive;
-    // cantidadSistemaFP = cantidadSistemaFP * cantidadNegative;
-
-    // cantidadModelo2TP = cantidadPositive * m2AccPositive;
-    // cantidadModelo2TN = cantidadNegative * m2AccNegative;
-    // cantidadModelo2FN = cantidadPositive * (1 - m2AccPositive);
-    // cantidadModelo2FP = cantidadNegative * (1 - m2AccNegative);
-
-    // < ----------------------------------------------------------- >
 
 
 
@@ -250,7 +334,30 @@ function evaluar(){
 
 
 function generateCorrelatedBernoulli(p, q, rho, n){
-    // Validate inputs
+    const jointProbabilities = computeJointBernoulliProbabilities(p, q, rho);
+
+    // Generate n pairs of (X, Y)
+    const result = [];
+    for (let i = 0; i < n; i++) {
+        // Generate X
+        let randomNumber = Math.random();
+
+        if(randomNumber < jointProbabilities[0]){
+            result.push([0,0]);
+        }else if(randomNumber < jointProbabilities[0] + jointProbabilities[1]){
+            result.push([0,1]);
+        }else if(randomNumber < jointProbabilities[0] + jointProbabilities[1] + jointProbabilities[2]){
+            result.push([1,0]);
+        }else{
+            result.push([1,1]);
+        }
+    }
+
+    return result;
+}
+
+
+function computeJointBernoulliProbabilities(p, q, rho) {
     if (p < 0 || p > 1 || q < 0 || q > 1 || rho < -1 || rho > 1) {
         throw new Error("Invalid inputs: p, q must be in [0,1], rho in [-1,1]");
     }
@@ -261,30 +368,25 @@ function generateCorrelatedBernoulli(p, q, rho, n){
     const stdProd = Math.sqrt(varX * varY);
 
     // Compute joint probability P(X=1, Y=1)
-    const jointProb = p * q + rho * stdProd;
+    const p11 = p * q + rho * stdProd;
 
     // Check if joint probability is valid
     const minJoint = Math.max(0, p + q - 1);
     const maxJoint = Math.min(p, q);
-    if (jointProb < minJoint || jointProb > maxJoint) {
+    if (p11 < minJoint || p11 > maxJoint) {
         throw new Error(`Invalid correlation: rho=${rho} is not achievable with p=${p}, q=${q}. ` +
-                        `Joint probability P(X=1,Y=1)=${jointProb} must be in [${minJoint}, ${maxJoint}]`);
+                        `P(1,1)=${p11} must be in [${minJoint}, ${maxJoint}]`);
     }
 
-    // Generate n pairs of (X, Y)
-    const result = [];
-    for (let i = 0; i < n; i++) {
-        // Generate X
-        const x = Math.random() < p ? 1 : 0;
+    // Compute other probabilities
+    const p10 = p - p11;  // P(X=1, Y=0)
+    const p01 = q - p11;  // P(X=0, Y=1)
+    const p00 = 1 - p - q + p11;  // P(X=0, Y=0)
 
-        // Conditional probability P(Y=1 | X)
-        const probYgivenX = x === 1 ? jointProb / p : (q - jointProb) / (1 - p);
-
-        // Generate Y
-        const y = Math.random() < probYgivenX ? 1 : 0;
-
-        result.push([x, y]);
+    // Ensure all probabilities are non-negative (should be if constraints hold)
+    if (p00 < 0 || p01 < 0 || p10 < 0 || p11 < 0) {
+        throw new Error("Computed probabilities include negative values; check inputs.");
     }
 
-    return result;
+    return [p00, p01, p10, p11];
 }

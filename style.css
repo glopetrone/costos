@@ -65,11 +65,6 @@ button:hover {
     background-color: #45a049;
 }
 
-.costos,
-.results {
-    margin-top: 30px;
-}
-
 .result-group {
     margin-bottom: 20px;
 }
@@ -103,6 +98,13 @@ input[readonly] {
 
 .inline-input input {
     width: 80px;
+}
+
+.evalButtons {
+    display: flex;
+    justify-content: center;
+    max-width: 50%;
+    margin-left: 25%;
 }
 
 /* Responsive design */
