@@ -29,6 +29,9 @@ const evalSistemaElement = document.getElementById("eval-sistema");
 const sumaEvalModelo2Element = document.getElementById("suma-eval-modelo2");
 const restaEvalModelo2Element = document.getElementById("resta-eval-modelo2");
 
+
+
+
 function calcularCostos(){
 
     // probabilidad de resultado del sistema cuando el modelo 2 realiza cierta prediccion
@@ -67,7 +70,6 @@ function calcularCostos(){
     restaFPelement.value = (sumaFPelement.value - sumaTNelement.value).toFixed(6);
 
 }
-
 
 
 
@@ -118,20 +120,21 @@ function estimarEvaluacion(){
 
 
     // Versión sin generar instancias calculando la probabilidad conjunta y multiplicando por la cantidad
+    // La función devuelve 1 si la instancia acertó para la clase a la que pertenecía y 0 si predijo erróneamente
 
     let probabilidadesPositive = computeJointBernoulliProbabilities(m1AccPositive, m2AccPositive, correlacionPositive);
-    let probabilidadesNegative = computeJointBernoulliProbabilities(1-m1AccNegative, 1-m2AccNegative, correlacionNegative);
+    let probabilidadesNegative = computeJointBernoulliProbabilities(m1AccNegative, m2AccNegative, correlacionNegative);
 
     if(tipoFusionador.value == 'or'){
         cantidadSistemaTP = probabilidadesPositive[1] + probabilidadesPositive[2] + probabilidadesPositive[3];
-        cantidadSistemaTN = probabilidadesNegative[0];
+        cantidadSistemaTN = probabilidadesNegative[3];
         cantidadSistemaFN = probabilidadesPositive[0];
-        cantidadSistemaFP = probabilidadesNegative[1] + probabilidadesNegative[2] + probabilidadesNegative[3];
+        cantidadSistemaFP = probabilidadesNegative[0] + probabilidadesNegative[1] + probabilidadesNegative[2];
     }else if(tipoFusionador.value == 'and'){
         cantidadSistemaTP = probabilidadesPositive[3];
-        cantidadSistemaTN =  + probabilidadesNegative[0] + probabilidadesNegative[1] + probabilidadesNegative[2];
+        cantidadSistemaTN =  + probabilidadesNegative[1] + probabilidadesNegative[2] + probabilidadesNegative[3];
         cantidadSistemaFN = probabilidadesPositive[0] + probabilidadesPositive[1] + probabilidadesPositive[2];
-        cantidadSistemaFP = probabilidadesNegative[3];
+        cantidadSistemaFP = probabilidadesNegative[0];
     }else{
         throw new Error("Fusionador no soportado. Usar 'or' o 'and'.");
     }
@@ -156,6 +159,8 @@ function estimarEvaluacion(){
     cantidadSistemaFP.toFixed(0)+'*'+costoNegative.toFixed(2)+'  =  '+
     (cantidadSistemaFN*costoPositive+
     cantidadSistemaFP*costoNegative).toFixed(2);
+
+
 
 
     // Evaluación modelo 2
@@ -228,11 +233,12 @@ function generarInstancias(){
     
     
 
-    // Version generando instancias
+    
+    // Versión generando instancias en base a la probabilidad conjunta
+    // La función devuelve 1 si la instancia acertó para la clase a la que pertenecía y 0 si predijo erróneamente
 
     let instanciasPositive = generateCorrelatedBernoulli(m1AccPositive, m2AccPositive, correlacionPositive, cantidadPositive);
-    let instanciasNegative = generateCorrelatedBernoulli(1-m1AccNegative, 1-m2AccNegative, correlacionNegative, cantidadNegative);
-
+    let instanciasNegative = generateCorrelatedBernoulli(m1AccNegative, m2AccNegative, correlacionNegative, cantidadNegative);
 
 
     for(const [predM1, predM2] of instanciasPositive){
@@ -265,24 +271,25 @@ function generarInstancias(){
         cantidadSistemaFN = cantidadSistemaFN;
     }
 
+
     for(const [predM1, predM2] of instanciasNegative){
         // Confusiónes modelo 2
         if(predM2 == 1){
-            cantidadModelo2FP = cantidadModelo2FP + 1;
-        }else{
             cantidadModelo2TN = cantidadModelo2TN + 1;
+        }else{
+            cantidadModelo2FP = cantidadModelo2FP + 1;
         }
 
         // Confusiónes sistema
         if(tipoFusionador.value == 'or'){
-            if(predM1 == 0 && predM2 == 0){
+            if(predM1 == 1 && predM2 == 1){
                 cantidadSistemaTN = cantidadSistemaTN + 1;
             }else{
                 cantidadSistemaFP = cantidadSistemaFP + 1;
             }
         }
         else if(tipoFusionador.value == 'and'){
-            if(predM1 == 1 && predM2 == 1){
+            if(predM1 == 0 && predM2 == 0){
                 cantidadSistemaFP = cantidadSistemaFP + 1;
             }else{
                 cantidadSistemaTN = cantidadSistemaTN + 1;
@@ -355,6 +362,8 @@ function generateCorrelatedBernoulli(p, q, rho, n){
 
     return result;
 }
+
+
 
 
 function computeJointBernoulliProbabilities(p, q, rho) {
