@@ -29,6 +29,12 @@ const evalSistemaElement = document.getElementById("eval-sistema");
 const sumaEvalModelo2Element = document.getElementById("suma-eval-modelo2");
 const restaEvalModelo2Element = document.getElementById("resta-eval-modelo2");
 
+const colorFondoPaginaElement = document.getElementById("page-background-color");
+const colorContainerPaginaElement = document.getElementById("container-background-color");
+
+const bodyElement = document.body;
+const containerElement = document.getElementById("container");
+
 
 
 
@@ -398,4 +404,11 @@ function computeJointBernoulliProbabilities(p, q, rho) {
     }
 
     return [p00, p01, p10, p11];
+}
+
+
+
+function cambiarColor(){
+    bodyElement.style.backgroundColor = colorFondoPaginaElement.value;
+    containerElement.style.backgroundColor = colorContainerPaginaElement.value;
 }
