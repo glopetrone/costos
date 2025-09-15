@@ -35,8 +35,7 @@ const colorContainerPaginaElement = document.getElementById("container-backgroun
 const bodyElement = document.body;
 const containerElement = document.getElementById("container");
 
-
-
+respetarLimites();
 
 function calcularCostos(){
 
@@ -407,6 +406,82 @@ function computeJointBernoulliProbabilities(p, q, rho) {
 }
 
 
+// function intervaloCorrelacion(){
+//     let p = parseFloat(m1AccPositiveElement.value);
+//     let q = parseFloat(m2AccPositiveElement.value);
+
+//     let varX = p * (1 - p);
+//     let varY = q * (1 - q);
+//     let stdProd = Math.sqrt(varX * varY);
+    
+//     let minJoint = Math.max(0, p + q - 1);
+//     let maxJoint = Math.min(p, q);
+
+//     correlacionPositiveElement.max = stdProd != 0 ? (maxJoint - p*q) / stdProd : 0;
+//     correlacionPositiveElement.min = stdProd != 0 ? (minJoint - p*q) / stdProd : 0;
+
+//     p = parseFloat(m1AccNegativeElement.value);
+//     q = parseFloat(m2AccNegativeElement.value);
+    
+//     varX = p * (1 - p);
+//     varY = q * (1 - q);
+//     stdProd = Math.sqrt(varX * varY);
+
+//     minJoint = Math.max(0, p + q - 1);
+//     maxJoint = Math.min(p, q);
+
+//     correlacionNegativeElement.max = stdProd != 0 ? (maxJoint - p*q) / stdProd : 0;
+//     correlacionNegativeElement.min = stdProd != 0 ? (minJoint - p*q) / stdProd : 0;
+// }
+
+function respetarLimites(){
+    let correlacionPositive = correlacionPositiveElement.value;
+
+    let p = parseFloat(m1AccPositiveElement.value);
+    let q = parseFloat(m2AccPositiveElement.value);
+
+    let varX = p * (1 - p);
+    let varY = q * (1 - q);
+    let stdProd = Math.sqrt(varX * varY);
+    
+    let minJoint = Math.max(0, p + q - 1);
+    let maxJoint = Math.min(p, q);
+
+    let correlacionMax = stdProd != 0 ? (maxJoint - p*q) / stdProd : 0;
+    let correlacionMin = stdProd != 0 ? (minJoint - p*q) / stdProd : 0;
+
+    if(correlacionPositive > correlacionMax){
+        correlacionPositiveElement.value = correlacionMax;
+    }
+    if(correlacionPositive < correlacionMin){
+        correlacionPositiveElement.value = correlacionMin;
+    }
+
+
+
+
+    let correlacionNegative = correlacionNegativeElement.value;
+
+    p = parseFloat(m1AccNegativeElement.value);
+    q = parseFloat(m2AccNegativeElement.value);
+    
+    varX = p * (1 - p);
+    varY = q * (1 - q);
+    stdProd = Math.sqrt(varX * varY);
+
+    minJoint = Math.max(0, p + q - 1);
+    maxJoint = Math.min(p, q);
+
+    correlacionMax = stdProd != 0 ? (maxJoint - p*q) / stdProd : 0;
+    correlacionMin = stdProd != 0 ? (minJoint - p*q) / stdProd : 0;
+
+    if(correlacionNegative > correlacionMax){
+        correlacionNegativeElement.value = correlacionMax;
+    }
+    if(correlacionNegative < correlacionMin){
+        correlacionNegativeElement.value = correlacionMin;
+    }
+}
 
 function cambiarColor(){
     bodyElement.style.backgroundColor = colorFondoPaginaElement.value;
