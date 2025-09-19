@@ -9,7 +9,7 @@
 <body>
     <input type="color" id="page-background-color" onchange="cambiarColor()" value="#404040" class="color-input">
     <div id="container">
-        <input type="color" id="container-background-color" onchange="cambiarColor()" value="#858d67" class="color-input">
+        <input type="color" id="container-background-color" onchange="cambiarColor()" value="#5AB4C8" class="color-input">
 
         <h1>Cost Calculator</h1>
 
@@ -18,11 +18,11 @@
             <h2>Modelo 1</h2>
             <div class="input-group">
                 <label for="m1-acc-positive">Accuracy Positive:</label>
-                <input type="number" id="m1-acc-positive" name="m1-acc-positive" step="0.01" min="0" max="1" value="0.8">
+                <input type="number" id="m1-acc-positive" name="m1-acc-positive" step="0.01" min="0" max="1" value="0.8" onchange="respetarLimites()">
             </div>
             <div class="input-group">
                 <label for="m1-acc-negative">Accuracy Negative:</label>
-                <input type="number" id="m1-acc-negative" name="m1-acc-negative" step="0.01" min="0" max="1" value="0.6">
+                <input type="number" id="m1-acc-negative" name="m1-acc-negative" step="0.01" min="0" max="1" value="0.6" onchange="respetarLimites()">
             </div>
 
 
@@ -31,11 +31,11 @@
             <h2>Modelo 2</h2>
             <div class="input-group">
                 <label for="m2-acc-positive">Accuracy Positive:</label>
-                <input type="number" id="m2-acc-positive" name="m2-acc-positive" step="0.01" min="0" max="1" value="0.5">
+                <input type="number" id="m2-acc-positive" name="m2-acc-positive" step="0.01" min="0" max="1" value="0.5" onchange="respetarLimites()">
             </div>
             <div class="input-group">
                 <label for="m2-acc-negative">Accuracy Negative:</label>
-                <input type="number" id="m2-acc-negative" name="m2-acc-negative" step="0.01" min="0" max="1" value="0.4">
+                <input type="number" id="m2-acc-negative" name="m2-acc-negative" step="0.01" min="0" max="1" value="0.4" onchange="respetarLimites()">
             </div>
 
 
@@ -134,6 +134,10 @@
 
             
             <div class="result-group">
+                <div class="input-group">
+                    <label for="peor-caso-sistema">Peor Caso Sistema:</label>
+                    <input type="text" id="peor-caso-sistema" readonly>
+                </div>
                 <div class="input-group">
                     <label for="eval-sistema">Evaluación Sistema:</label>
                     <input type="text" id="eval-sistema" readonly>

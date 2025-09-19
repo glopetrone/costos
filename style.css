@@ -10,7 +10,7 @@ body {
 #container {
     max-width: 800px;
     margin: 0 auto;
-    background-color: rgb(133,141,103);
+    background-color: rgb(90,180,200);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -55,7 +55,7 @@ input {
 }
 
 button {
-    background-color: rgb(200,200,200);
+    background-color: rgb(170, 150, 80);
     color: black;
     padding: 10px 20px;
     border: solid 3px;

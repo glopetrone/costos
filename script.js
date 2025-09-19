@@ -25,6 +25,7 @@ const restaTNelement = document.getElementById("resta-tn");
 const restaFNelement = document.getElementById("resta-fn");
 const restaFPelement = document.getElementById("resta-fp");
 
+const peorCasoSistemaElement = document.getElementById("peor-caso-sistema");
 const evalSistemaElement = document.getElementById("eval-sistema");
 const sumaEvalModelo2Element = document.getElementById("suma-eval-modelo2");
 const restaEvalModelo2Element = document.getElementById("resta-eval-modelo2");
@@ -35,11 +36,18 @@ const colorContainerPaginaElement = document.getElementById("container-backgroun
 const bodyElement = document.body;
 const containerElement = document.getElementById("container");
 
+
+
+
 respetarLimites();
+
+
+
 
 function calcularCostos(){
 
     // probabilidad de resultado del sistema cuando el modelo 2 realiza cierta prediccion
+
     let probFNcuandoP;
     let probFPcuandoN;
     let probFNcuandoN;
@@ -64,16 +72,15 @@ function calcularCostos(){
 
     // Costos para el modelo 2
 
-    sumaTPelement.value = (probFNcuandoP * costoPositiveElement.value).toFixed(6);
-    sumaTNelement.value = (probFPcuandoN * costoNegativeElement.value).toFixed(6);
-    sumaFNelement.value = (probFNcuandoN * costoPositiveElement.value).toFixed(6);
-    sumaFPelement.value = (probFPcuandoP * costoNegativeElement.value).toFixed(6);
+    sumaTPelement.value = maxDecimals(probFNcuandoP * costoPositiveElement.value, 6);
+    sumaTNelement.value = maxDecimals(probFPcuandoN * costoNegativeElement.value, 6);
+    sumaFNelement.value = maxDecimals(probFNcuandoN * costoPositiveElement.value, 6);
+    sumaFPelement.value = maxDecimals(probFPcuandoP * costoNegativeElement.value, 6);
 
-    restaTPelement.value = (sumaTPelement.value - sumaTPelement.value).toFixed(6);
-    restaTNelement.value = (sumaTNelement.value - sumaTNelement.value).toFixed(6);
-    restaFNelement.value = (sumaFNelement.value - sumaTPelement.value).toFixed(6);
-    restaFPelement.value = (sumaFPelement.value - sumaTNelement.value).toFixed(6);
-
+    restaTPelement.value = maxDecimals(sumaTPelement.value - sumaTPelement.value, 6);
+    restaTNelement.value = maxDecimals(sumaTNelement.value - sumaTNelement.value, 6);
+    restaFNelement.value = maxDecimals(sumaFNelement.value - sumaTPelement.value, 6);
+    restaFPelement.value = maxDecimals(sumaFPelement.value - sumaTNelement.value, 6);
 }
 
 
@@ -100,8 +107,8 @@ function estimarEvaluacion(){
     let m2AccPositive = parseFloat(m2AccPositiveElement.value);
     let m2AccNegative = parseFloat(m2AccNegativeElement.value);
 
-    let correlacionPositive = correlacionPositiveElement.value;
-    let correlacionNegative = correlacionNegativeElement.value;
+    let correlacionPositive = parseFloat(correlacionPositiveElement.value);
+    let correlacionNegative = parseFloat(correlacionNegativeElement.value);
 
     let cantidadPositive = parseFloat(cantidadPositiveElement.value);
     let cantidadNegative = parseFloat(cantidadNegativeElement.value);
@@ -160,10 +167,10 @@ function estimarEvaluacion(){
     // Evaluación del sistema
 
     evalSistemaElement.value = 
-    cantidadSistemaFN.toFixed(0)+'*'+costoPositive.toFixed(2)+' + '+
-    cantidadSistemaFP.toFixed(0)+'*'+costoNegative.toFixed(2)+'  =  '+
-    (cantidadSistemaFN*costoPositive+
-    cantidadSistemaFP*costoNegative).toFixed(2);
+    maxDecimals(cantidadSistemaFN,2)+'*'+maxDecimals(costoPositive,2)+' + '+
+    maxDecimals(cantidadSistemaFP,2)+'*'+maxDecimals(costoNegative,2)+'  =  '+
+    maxDecimals(cantidadSistemaFN*costoPositive+
+    cantidadSistemaFP*costoNegative,2);
 
 
 
@@ -171,24 +178,65 @@ function estimarEvaluacion(){
     // Evaluación modelo 2
 
     sumaEvalModelo2Element.value = 
-    cantidadModelo2TP.toFixed(0)+'*'+sumaTP.toFixed(2)+' + '+
-    cantidadModelo2TN.toFixed(0)+'*'+sumaTN.toFixed(2)+' + '+
-    cantidadModelo2FN.toFixed(0)+'*'+sumaFN.toFixed(2)+' + '+
-    cantidadModelo2FP.toFixed(0)+'*'+sumaFP.toFixed(2)+'  =  '+
-    (cantidadModelo2TP * sumaTP + 
+    maxDecimals(cantidadModelo2TP,2)+'*'+maxDecimals(sumaTP,2)+' + '+
+    maxDecimals(cantidadModelo2TN,2)+'*'+maxDecimals(sumaTN,2)+' + '+
+    maxDecimals(cantidadModelo2FN,2)+'*'+maxDecimals(sumaFN,2)+' + '+
+    maxDecimals(cantidadModelo2FP,2)+'*'+maxDecimals(sumaFP,2)+'  =  '+
+    maxDecimals(cantidadModelo2TP * sumaTP + 
     cantidadModelo2TN * sumaTN + 
     cantidadModelo2FN * sumaFN + 
-    cantidadModelo2FP * sumaFP).toFixed(2);
+    cantidadModelo2FP * sumaFP,2);
 
     restaEvalModelo2Element.value = 
-    cantidadModelo2TP.toFixed(0)+'*'+restaTP.toFixed(2)+' + '+
-    cantidadModelo2TN.toFixed(0)+'*'+restaTN.toFixed(2)+' + '+
-    cantidadModelo2FN.toFixed(0)+'*'+restaFN.toFixed(2)+' + '+
-    cantidadModelo2FP.toFixed(0)+'*'+restaFP.toFixed(2)+'  =  '+
-    (cantidadModelo2TP * restaTP + 
+    maxDecimals(cantidadModelo2TP,2)+'*'+maxDecimals(restaTP,2)+' + '+
+    maxDecimals(cantidadModelo2TN,2)+'*'+maxDecimals(restaTN,2)+' + '+
+    maxDecimals(cantidadModelo2FN,2)+'*'+maxDecimals(restaFN,2)+' + '+
+    maxDecimals(cantidadModelo2FP,2)+'*'+maxDecimals(restaFP,2)+'  =  '+
+    maxDecimals(cantidadModelo2TP * restaTP + 
     cantidadModelo2TN * restaTN + 
     cantidadModelo2FN * restaFN + 
-    cantidadModelo2FP * restaFP).toFixed(2);
+    cantidadModelo2FP * restaFP,2);
+
+
+
+
+    // Costo Peor Caso
+
+    let probFNcuandoP;
+    let probFPcuandoN;
+    let probFNcuandoN;
+    let probFPcuandoP;
+
+    if(tipoFusionador.value == 'or'){
+        probFNcuandoP = 0;
+        probFPcuandoN = 1 - m1AccNegative;
+        probFNcuandoN = 1 - m1AccPositive;
+        probFPcuandoP = 1;
+    }else if(tipoFusionador.value == 'and'){
+        probFNcuandoP = 1 - m1AccPositive;
+        probFPcuandoN = 0;
+        probFNcuandoN = 1;
+        probFPcuandoP = 1 - m1AccNegative;
+    }else{
+        throw new Error("Fusionador no soportado. Usar 'or' o 'and'.");
+    }
+
+    peorCasoAciertosEnPositive = Math.min(cantidadModelo2TP, probFNcuandoP * cantidadPositive);
+    peorCasoAciertosEnNegative = Math.min(cantidadModelo2TN, probFPcuandoN * cantidadNegative);
+    
+    peorCasoSistemaElement.value = 
+    '('+maxDecimals(peorCasoAciertosEnPositive,2)+'+'+
+    maxDecimals(Math.min(probFNcuandoN * cantidadPositive - peorCasoAciertosEnPositive, cantidadModelo2FN),2)+
+    ') * '+costoPositive+' + '+
+    '('+maxDecimals(peorCasoAciertosEnNegative,2)+'+'+
+    maxDecimals(Math.min(probFPcuandoP * cantidadNegative - peorCasoAciertosEnNegative, cantidadModelo2FP),2)+
+    ') * '+costoNegative+' = '+
+    maxDecimals((peorCasoAciertosEnPositive +
+    Math.min(probFNcuandoN * cantidadPositive - peorCasoAciertosEnPositive, cantidadModelo2FN)) * 
+    costoPositive + 
+    (peorCasoAciertosEnNegative + 
+    Math.min(probFPcuandoP * cantidadNegative - peorCasoAciertosEnNegative, cantidadModelo2FP)) * 
+    costoNegative,2);
 }
 
 
@@ -244,7 +292,9 @@ function generarInstancias(){
 
     let instanciasPositive = generateCorrelatedBernoulli(m1AccPositive, m2AccPositive, correlacionPositive, cantidadPositive);
     let instanciasNegative = generateCorrelatedBernoulli(m1AccNegative, m2AccNegative, correlacionNegative, cantidadNegative);
-
+    let aciertosM1Positive = 0;
+    let aciertosM1Negative = 0;
+    
 
     for(const [predM1, predM2] of instanciasPositive){
         // Confusiónes modelo 2
@@ -253,6 +303,12 @@ function generarInstancias(){
         }else{
             cantidadModelo2FN = cantidadModelo2FN + 1;
         }
+
+        if(predM1 == 1){
+            aciertosM1Positive = aciertosM1Positive + 1;
+        }
+
+
 
         // Confusiónes sistema
         if(tipoFusionador.value == 'or'){
@@ -285,6 +341,10 @@ function generarInstancias(){
             cantidadModelo2FP = cantidadModelo2FP + 1;
         }
 
+        if(predM1 == 1){
+            aciertosM1Negative = aciertosM1Negative + 1;
+        }
+
         // Confusiónes sistema
         if(tipoFusionador.value == 'or'){
             if(predM1 == 1 && predM2 == 1){
@@ -303,8 +363,6 @@ function generarInstancias(){
         else{
             throw new Error("Fusionador no soportado. Usar 'or' o 'and'.");
         }
-        cantidadSistemaTN = cantidadSistemaTN;
-        cantidadSistemaFP = cantidadSistemaFP;
     }
 
 
@@ -313,33 +371,78 @@ function generarInstancias(){
     // Evaluación del sistema
 
     evalSistemaElement.value = 
-    cantidadSistemaFN.toFixed(0)+'*'+costoPositive.toFixed(2)+' + '+
-    cantidadSistemaFP.toFixed(0)+'*'+costoNegative.toFixed(2)+'  =  '+
-    (cantidadSistemaFN*costoPositive+
-    cantidadSistemaFP*costoNegative).toFixed(2);
+    maxDecimals(cantidadSistemaFN,2)+'*'+maxDecimals(costoPositive,2)+' + '+
+    maxDecimals(cantidadSistemaFP,2)+'*'+maxDecimals(costoNegative,2)+'  =  '+
+    maxDecimals(cantidadSistemaFN*costoPositive+
+    cantidadSistemaFP*costoNegative, 2);
 
 
+
+    
     // Evaluación modelo 2
 
     sumaEvalModelo2Element.value = 
-    cantidadModelo2TP.toFixed(0)+'*'+sumaTP.toFixed(2)+' + '+
-    cantidadModelo2TN.toFixed(0)+'*'+sumaTN.toFixed(2)+' + '+
-    cantidadModelo2FN.toFixed(0)+'*'+sumaFN.toFixed(2)+' + '+
-    cantidadModelo2FP.toFixed(0)+'*'+sumaFP.toFixed(2)+'  =  '+
-    (cantidadModelo2TP * sumaTP + 
+    maxDecimals(cantidadModelo2TP,2)+'*'+maxDecimals(sumaTP,2)+' + '+
+    maxDecimals(cantidadModelo2TN,2)+'*'+maxDecimals(sumaTN,2)+' + '+
+    maxDecimals(cantidadModelo2FN,2)+'*'+maxDecimals(sumaFN,2)+' + '+
+    maxDecimals(cantidadModelo2FP,2)+'*'+maxDecimals(sumaFP,2)+'  =  '+
+    maxDecimals(cantidadModelo2TP * sumaTP + 
     cantidadModelo2TN * sumaTN + 
     cantidadModelo2FN * sumaFN + 
-    cantidadModelo2FP * sumaFP).toFixed(2);
+    cantidadModelo2FP * sumaFP,2);
 
     restaEvalModelo2Element.value = 
-    cantidadModelo2TP.toFixed(0)+'*'+restaTP.toFixed(2)+' + '+
-    cantidadModelo2TN.toFixed(0)+'*'+restaTN.toFixed(2)+' + '+
-    cantidadModelo2FN.toFixed(0)+'*'+restaFN.toFixed(2)+' + '+
-    cantidadModelo2FP.toFixed(0)+'*'+restaFP.toFixed(2)+'  =  '+
-    (cantidadModelo2TP * restaTP + 
+    maxDecimals(cantidadModelo2TP,2)+'*'+maxDecimals(restaTP,2)+' + '+
+    maxDecimals(cantidadModelo2TN,2)+'*'+maxDecimals(restaTN,2)+' + '+
+    maxDecimals(cantidadModelo2FN,2)+'*'+maxDecimals(restaFN,2)+' + '+
+    maxDecimals(cantidadModelo2FP,2)+'*'+maxDecimals(restaFP,2)+'  =  '+
+    maxDecimals(cantidadModelo2TP * restaTP + 
     cantidadModelo2TN * restaTN + 
     cantidadModelo2FN * restaFN + 
-    cantidadModelo2FP * restaFP).toFixed(2);
+    cantidadModelo2FP * restaFP,2);
+
+
+
+
+    // Costo Peor Caso
+
+    let probFNcuandoP;
+    let probFPcuandoN;
+    let probFNcuandoN;
+    let probFPcuandoP;
+
+    if(tipoFusionador.value == 'or'){
+        probFNcuandoP = 0;
+        probFPcuandoN = 1 - m1AccNegative;
+        probFNcuandoN = 1 - m1AccPositive;
+        probFPcuandoP = 1;
+    }else if(tipoFusionador.value == 'and'){
+        probFNcuandoP = 1 - m1AccPositive;
+        probFPcuandoN = 0;
+        probFNcuandoN = 1;
+        probFPcuandoP = 1 - m1AccNegative;
+    }else{
+        throw new Error("Fusionador no soportado. Usar 'or' o 'and'.");
+    }
+
+    peorCasoAciertosEnPositive = Math.min(cantidadModelo2TP, probFNcuandoP * cantidadPositive);
+    peorCasoAciertosEnNegative = Math.min(cantidadModelo2TN, probFPcuandoN * cantidadNegative);
+
+    console.log(maxDecimals(100*aciertosM1Positive/cantidadPositive,0)+'%', maxDecimals(100*aciertosM1Negative/cantidadNegative,0)+'%');
+    
+    peorCasoSistemaElement.value = 
+    '('+maxDecimals(peorCasoAciertosEnPositive,2)+'+'+
+    maxDecimals(Math.min(probFNcuandoN * cantidadPositive - peorCasoAciertosEnPositive, cantidadModelo2FN),2)+
+    ') * '+costoPositive+' + '+
+    '('+maxDecimals(peorCasoAciertosEnNegative,2)+'+'+
+    maxDecimals(Math.min(probFPcuandoP * cantidadNegative - peorCasoAciertosEnNegative, cantidadModelo2FP),2)+
+    ') * '+costoNegative+' = '+
+    maxDecimals((peorCasoAciertosEnPositive +
+    Math.min(probFNcuandoN * cantidadPositive - peorCasoAciertosEnPositive, cantidadModelo2FN)) * 
+    costoPositive + 
+    (peorCasoAciertosEnNegative + 
+    Math.min(probFPcuandoP * cantidadNegative - peorCasoAciertosEnNegative, cantidadModelo2FP)) * 
+    costoNegative,2);
 }
 
 
@@ -406,33 +509,7 @@ function computeJointBernoulliProbabilities(p, q, rho) {
 }
 
 
-// function intervaloCorrelacion(){
-//     let p = parseFloat(m1AccPositiveElement.value);
-//     let q = parseFloat(m2AccPositiveElement.value);
 
-//     let varX = p * (1 - p);
-//     let varY = q * (1 - q);
-//     let stdProd = Math.sqrt(varX * varY);
-    
-//     let minJoint = Math.max(0, p + q - 1);
-//     let maxJoint = Math.min(p, q);
-
-//     correlacionPositiveElement.max = stdProd != 0 ? (maxJoint - p*q) / stdProd : 0;
-//     correlacionPositiveElement.min = stdProd != 0 ? (minJoint - p*q) / stdProd : 0;
-
-//     p = parseFloat(m1AccNegativeElement.value);
-//     q = parseFloat(m2AccNegativeElement.value);
-    
-//     varX = p * (1 - p);
-//     varY = q * (1 - q);
-//     stdProd = Math.sqrt(varX * varY);
-
-//     minJoint = Math.max(0, p + q - 1);
-//     maxJoint = Math.min(p, q);
-
-//     correlacionNegativeElement.max = stdProd != 0 ? (maxJoint - p*q) / stdProd : 0;
-//     correlacionNegativeElement.min = stdProd != 0 ? (minJoint - p*q) / stdProd : 0;
-// }
 
 function respetarLimites(){
     let correlacionPositive = correlacionPositiveElement.value;
@@ -483,7 +560,29 @@ function respetarLimites(){
     }
 }
 
+
+
+
 function cambiarColor(){
     bodyElement.style.backgroundColor = colorFondoPaginaElement.value;
     containerElement.style.backgroundColor = colorContainerPaginaElement.value;
+}
+
+
+
+
+function maxDecimals(number, decimalQuantity){
+    numberString = number.toString();
+    if(numberString.includes('.')){
+        numberString = numberString.slice(0, Math.min(numberString.indexOf('.')+decimalQuantity+1, numberString.length));
+        idx = numberString.length-1;
+        while(numberString[idx] == '0'){
+            numberString = numberString.slice(0, idx);
+            idx = idx - 1;
+        }
+        if(numberString[idx] == ['.']){
+            numberString = numberString.slice(0, idx);
+        }
+    }
+    return numberString;
 }
