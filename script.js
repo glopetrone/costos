@@ -1,8 +1,13 @@
+import { maxDecimals } from "./utils.js";
+import { generateCorrelatedBernoulli, computeJointBernoulliProbabilities } from "./distribuciones.js";
+
 const m1AccPositiveElement = document.getElementById("m1-acc-positive");
 const m1AccNegativeElement = document.getElementById("m1-acc-negative");
 
 const m2AccPositiveElement = document.getElementById("m2-acc-positive");
 const m2AccNegativeElement = document.getElementById("m2-acc-negative");
+
+const tipoFusionador = document.getElementById("tipo");
 
 const correlacionPositiveElement = document.getElementById("correlacion-positive");
 const correlacionNegativeElement = document.getElementById("correlacion-negative");
@@ -12,8 +17,6 @@ const costoNegativeElement = document.getElementById("costo-negative");
 
 const cantidadPositiveElement = document.getElementById("cantidad-positive");
 const cantidadNegativeElement = document.getElementById("cantidad-negative");
-
-const tipoFusionador = document.getElementById("tipo");
 
 const sumaTPelement = document.getElementById("suma-tp");
 const sumaTNelement = document.getElementById("suma-tn");
@@ -30,16 +33,18 @@ const evalSistemaElement = document.getElementById("eval-sistema");
 const sumaEvalModelo2Element = document.getElementById("suma-eval-modelo2");
 const restaEvalModelo2Element = document.getElementById("resta-eval-modelo2");
 
-const colorFondoPaginaElement = document.getElementById("page-background-color");
-const colorContainerPaginaElement = document.getElementById("container-background-color");
-
-const bodyElement = document.body;
-const containerElement = document.getElementById("container");
+const calculateCostBtnElement = document.getElementById("calculate-cost-btn");
+const estimateEvaluationBtnElement = document.getElementById("estimate-evaluation-btn");
+const generateInstancesBtnElement = document.getElementById("generate-instances-btn");
 
 
 
 
-respetarLimites();
+export function eventListeners(){
+    calculateCostBtnElement.addEventListener('click', calcularCostos);
+    estimateEvaluationBtnElement.addEventListener('click', estimarEvaluacion);
+    generateInstancesBtnElement.addEventListener('click', generarInstancias);
+}
 
 
 
@@ -221,8 +226,8 @@ function estimarEvaluacion(){
         throw new Error("Fusionador no soportado. Usar 'or' o 'and'.");
     }
 
-    peorCasoAciertosEnPositive = Math.min(cantidadModelo2TP, probFNcuandoP * cantidadPositive);
-    peorCasoAciertosEnNegative = Math.min(cantidadModelo2TN, probFPcuandoN * cantidadNegative);
+    let peorCasoAciertosEnPositive = Math.min(cantidadModelo2TP, probFNcuandoP * cantidadPositive);
+    let peorCasoAciertosEnNegative = Math.min(cantidadModelo2TN, probFPcuandoN * cantidadNegative);
     
     peorCasoSistemaElement.value = 
     '('+maxDecimals(peorCasoAciertosEnPositive,2)+'+'+
@@ -425,10 +430,8 @@ function generarInstancias(){
         throw new Error("Fusionador no soportado. Usar 'or' o 'and'.");
     }
 
-    peorCasoAciertosEnPositive = Math.min(cantidadModelo2TP, probFNcuandoP * cantidadPositive);
-    peorCasoAciertosEnNegative = Math.min(cantidadModelo2TN, probFPcuandoN * cantidadNegative);
-
-    console.log(maxDecimals(100*aciertosM1Positive/cantidadPositive,0)+'%', maxDecimals(100*aciertosM1Negative/cantidadNegative,0)+'%');
+    let peorCasoAciertosEnPositive = Math.min(cantidadModelo2TP, probFNcuandoP * cantidadPositive);
+    let peorCasoAciertosEnNegative = Math.min(cantidadModelo2TN, probFPcuandoN * cantidadNegative);
     
     peorCasoSistemaElement.value = 
     '('+maxDecimals(peorCasoAciertosEnPositive,2)+'+'+
@@ -443,146 +446,4 @@ function generarInstancias(){
     (peorCasoAciertosEnNegative + 
     Math.min(probFPcuandoP * cantidadNegative - peorCasoAciertosEnNegative, cantidadModelo2FP)) * 
     costoNegative,2);
-}
-
-
-
-
-function generateCorrelatedBernoulli(p, q, rho, n){
-    const jointProbabilities = computeJointBernoulliProbabilities(p, q, rho);
-
-    // Generate n pairs of (X, Y)
-    const result = [];
-    for (let i = 0; i < n; i++) {
-        // Generate X
-        let randomNumber = Math.random();
-
-        if(randomNumber < jointProbabilities[0]){
-            result.push([0,0]);
-        }else if(randomNumber < jointProbabilities[0] + jointProbabilities[1]){
-            result.push([0,1]);
-        }else if(randomNumber < jointProbabilities[0] + jointProbabilities[1] + jointProbabilities[2]){
-            result.push([1,0]);
-        }else{
-            result.push([1,1]);
-        }
-    }
-
-    return result;
-}
-
-
-
-
-function computeJointBernoulliProbabilities(p, q, rho) {
-    if (p < 0 || p > 1 || q < 0 || q > 1 || rho < -1 || rho > 1) {
-        throw new Error("Invalid inputs: p, q must be in [0,1], rho in [-1,1]");
-    }
-
-    // Compute variance terms
-    const varX = p * (1 - p);
-    const varY = q * (1 - q);
-    const stdProd = Math.sqrt(varX * varY);
-
-    // Compute joint probability P(X=1, Y=1)
-    const p11 = p * q + rho * stdProd;
-
-    // Check if joint probability is valid
-    const minJoint = Math.max(0, p + q - 1);
-    const maxJoint = Math.min(p, q);
-    if (p11 < minJoint || p11 > maxJoint) {
-        throw new Error(`Invalid correlation: rho=${rho} is not achievable with p=${p}, q=${q}. ` +
-                        `P(1,1)=${p11} must be in [${minJoint}, ${maxJoint}]`);
-    }
-
-    // Compute other probabilities
-    const p10 = p - p11;  // P(X=1, Y=0)
-    const p01 = q - p11;  // P(X=0, Y=1)
-    const p00 = 1 - p - q + p11;  // P(X=0, Y=0)
-
-    // Ensure all probabilities are non-negative (should be if constraints hold)
-    if (p00 < 0 || p01 < 0 || p10 < 0 || p11 < 0) {
-        throw new Error("Computed probabilities include negative values; check inputs.");
-    }
-
-    return [p00, p01, p10, p11];
-}
-
-
-
-
-function respetarLimites(){
-    let correlacionPositive = correlacionPositiveElement.value;
-
-    let p = parseFloat(m1AccPositiveElement.value);
-    let q = parseFloat(m2AccPositiveElement.value);
-
-    let varX = p * (1 - p);
-    let varY = q * (1 - q);
-    let stdProd = Math.sqrt(varX * varY);
-    
-    let minJoint = Math.max(0, p + q - 1);
-    let maxJoint = Math.min(p, q);
-
-    let correlacionMax = stdProd != 0 ? (maxJoint - p*q) / stdProd : 0;
-    let correlacionMin = stdProd != 0 ? (minJoint - p*q) / stdProd : 0;
-
-    if(correlacionPositive > correlacionMax){
-        correlacionPositiveElement.value = correlacionMax;
-    }
-    if(correlacionPositive < correlacionMin){
-        correlacionPositiveElement.value = correlacionMin;
-    }
-
-
-
-
-    let correlacionNegative = correlacionNegativeElement.value;
-
-    p = parseFloat(m1AccNegativeElement.value);
-    q = parseFloat(m2AccNegativeElement.value);
-    
-    varX = p * (1 - p);
-    varY = q * (1 - q);
-    stdProd = Math.sqrt(varX * varY);
-
-    minJoint = Math.max(0, p + q - 1);
-    maxJoint = Math.min(p, q);
-
-    correlacionMax = stdProd != 0 ? (maxJoint - p*q) / stdProd : 0;
-    correlacionMin = stdProd != 0 ? (minJoint - p*q) / stdProd : 0;
-
-    if(correlacionNegative > correlacionMax){
-        correlacionNegativeElement.value = correlacionMax;
-    }
-    if(correlacionNegative < correlacionMin){
-        correlacionNegativeElement.value = correlacionMin;
-    }
-}
-
-
-
-
-function cambiarColor(){
-    bodyElement.style.backgroundColor = colorFondoPaginaElement.value;
-    containerElement.style.backgroundColor = colorContainerPaginaElement.value;
-}
-
-
-
-
-function maxDecimals(number, decimalQuantity){
-    numberString = number.toString();
-    if(numberString.includes('.')){
-        numberString = numberString.slice(0, Math.min(numberString.indexOf('.')+decimalQuantity+1, numberString.length));
-        idx = numberString.length-1;
-        while(numberString[idx] == '0'){
-            numberString = numberString.slice(0, idx);
-            idx = idx - 1;
-        }
-        if(numberString[idx] == ['.']){
-            numberString = numberString.slice(0, idx);
-        }
-    }
-    return numberString;
 }

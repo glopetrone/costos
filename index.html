@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <input type="color" id="page-background-color" onchange="cambiarColor()" value="#404040" class="color-input">
+    <input type="color" id="page-background-color" value="#404040" class="color-input">
     <div id="container">
-        <input type="color" id="container-background-color" onchange="cambiarColor()" value="#5AB4C8" class="color-input">
+        <input type="color" id="container-background-color" value="#5AB4C8" class="color-input">
 
         <h1>Cost Calculator</h1>
 
@@ -18,11 +18,11 @@
             <h2>Modelo 1</h2>
             <div class="input-group">
                 <label for="m1-acc-positive">Accuracy Positive:</label>
-                <input type="number" id="m1-acc-positive" name="m1-acc-positive" step="0.01" min="0" max="1" value="0.8" onchange="respetarLimites()">
+                <input type="number" id="m1-acc-positive" name="m1-acc-positive" step="0.01" min="0" max="1" value="0.8">
             </div>
             <div class="input-group">
                 <label for="m1-acc-negative">Accuracy Negative:</label>
-                <input type="number" id="m1-acc-negative" name="m1-acc-negative" step="0.01" min="0" max="1" value="0.6" onchange="respetarLimites()">
+                <input type="number" id="m1-acc-negative" name="m1-acc-negative" step="0.01" min="0" max="1" value="0.6">
             </div>
 
 
@@ -31,11 +31,11 @@
             <h2>Modelo 2</h2>
             <div class="input-group">
                 <label for="m2-acc-positive">Accuracy Positive:</label>
-                <input type="number" id="m2-acc-positive" name="m2-acc-positive" step="0.01" min="0" max="1" value="0.5" onchange="respetarLimites()">
+                <input type="number" id="m2-acc-positive" name="m2-acc-positive" step="0.01" min="0" max="1" value="0.5">
             </div>
             <div class="input-group">
                 <label for="m2-acc-negative">Accuracy Negative:</label>
-                <input type="number" id="m2-acc-negative" name="m2-acc-negative" step="0.01" min="0" max="1" value="0.4" onchange="respetarLimites()">
+                <input type="number" id="m2-acc-negative" name="m2-acc-negative" step="0.01" min="0" max="1" value="0.4">
             </div>
 
 
@@ -44,13 +44,23 @@
             <h2>Correlación</h2>
             <div class="input-group">
                 <label for="correlacion-positive">Correlación Positive:</label>
-                <input type="number" id="correlacion-positive" name="correlacion-positive" step="0.01" min="-1" max="1" value="0" onchange="respetarLimites()">
+                <input type="number" id="correlacion-positive" name="correlacion-positive" step="0.01" min="-1" max="1" value="0">
             </div>
             <div class="input-group">
                 <label for="correlacion-negative">Correlación Negative:</label>
-                <input type="number" id="correlacion-negative" name="correlacion-negative" step="0.01" min="-1" max="1" value="0" onchange="respetarLimites()">
+                <input type="number" id="correlacion-negative" name="correlacion-negative" step="0.01" min="-1" max="1" value="0">
             </div>
             
+
+
+        <!-- Fusionador -->
+
+            <h2>Fusionador</h2>
+            <div class="input-group">
+                <label for="tipo">Tipo:</label>
+                <input type="text" id="tipo" name="tipo" value="or">
+            </div>
+
 
 
         <!-- Datos -->
@@ -73,13 +83,6 @@
                 <input type="number" id="cantidad-negative" name="cantidad-negative" min="0" value="200">
             </div>
 
-        <!-- Fusionador -->
-
-            <h2>Fusionador</h2>
-            <div class="input-group">
-                <label for="tipo">Tipo:</label>
-                <input type="text" id="tipo" name="tipo" value="or">
-            </div>
 
         
         <!-- Costos -->
@@ -125,7 +128,7 @@
                 <input type="text" id="resta-fp">
             </div>
         </div>
-        <button type="button" id="calculateCostBtn" onclick="calcularCostos()">Calcular Costos</button>
+        <button type="button" id="calculate-cost-btn">Calcular Costos</button>
 
 
         <!-- Resultados -->
@@ -153,13 +156,19 @@
             </div>
             
             <div class="evalButtons">
-                <button type="button" id="estimateEvaluationBtn" class="inline-group" onclick="estimarEvaluacion()">Estimar Evaluación</button>
-                <button type="button" id="generateInstancesBtn" class="inline-group" onclick="generarInstancias()">Generar Instancias</button>
+                <button type="button" id="estimate-evaluation-btn" class="inline-group">Estimar Evaluación</button>
+                <button type="button" id="generate-instances-btn" class="inline-group">Generar Instancias</button>
             </div>
 
     </div>
 
-    <script src="script.js"></script>
+    <script type="module">
+        import {eventListeners as utilsEventListeners} from '/utils.js';
+        import {eventListeners as mainEventListeners} from '/script.js';
+
+        utilsEventListeners();    
+        mainEventListeners();
+    </script>
 
 </body>
 
