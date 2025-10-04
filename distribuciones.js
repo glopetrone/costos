@@ -1,4 +1,6 @@
 export function generateCorrelatedBernoulli(p, q, rho, n){
+    // La función devuelve 1 si la instancia acertó para la clase a la que pertenecía y 0 si predijo erróneamente
+    
     const jointProbabilities = computeJointBernoulliProbabilities(p, q, rho);
 
     // Generate n pairs of (X, Y)
@@ -25,6 +27,8 @@ export function generateCorrelatedBernoulli(p, q, rho, n){
 
 
 export function computeJointBernoulliProbabilities(p, q, rho) {
+    // La función devuelve 1 si la instancia acertó para la clase a la que pertenecía y 0 si predijo erróneamente
+
     if (p < 0 || p > 1 || q < 0 || q > 1 || rho < -1 || rho > 1) {
         throw new Error("Invalid inputs: p, q must be in [0,1], rho in [-1,1]");
     }

@@ -1,5 +1,7 @@
-import { maxDecimals } from "./utils.js";
+import { maxDecimals, cambiarColor, respetarLimites } from "./utils.js";
 import { generateCorrelatedBernoulli, computeJointBernoulliProbabilities } from "./distribuciones.js";
+import * as fusionadores from "./fusionadores.js";
+
 
 const m1AccPositiveElement = document.getElementById("m1-acc-positive");
 const m1AccNegativeElement = document.getElementById("m1-acc-negative");
@@ -37,6 +39,8 @@ const calculateCostBtnElement = document.getElementById("calculate-cost-btn");
 const estimateEvaluationBtnElement = document.getElementById("estimate-evaluation-btn");
 const generateInstancesBtnElement = document.getElementById("generate-instances-btn");
 
+const backgroundColorElement = document.getElementById("page-background-color");
+const containerColorElement = document.getElementById("container-background-color");
 
 
 
@@ -44,6 +48,19 @@ export function eventListeners(){
     calculateCostBtnElement.addEventListener('click', calcularCostos);
     estimateEvaluationBtnElement.addEventListener('click', estimarEvaluacion);
     generateInstancesBtnElement.addEventListener('click', generarInstancias);
+
+    backgroundColorElement.addEventListener('change', cambiarColor);
+    containerColorElement.addEventListener('change', cambiarColor);
+
+
+    m1AccPositiveElement.addEventListener('change', respetarLimites);
+    m1AccNegativeElement.addEventListener('change', respetarLimites);
+    m2AccPositiveElement.addEventListener('change', respetarLimites);
+    m2AccNegativeElement.addEventListener('change', respetarLimites);
+    correlacionPositiveElement.addEventListener('change', respetarLimites);
+    correlacionNegativeElement.addEventListener('change', respetarLimites);
+
+    respetarLimites();
 }
 
 
@@ -53,27 +70,34 @@ function calcularCostos(){
 
     // probabilidad de resultado del sistema cuando el modelo 2 realiza cierta prediccion
 
+    let m1AccPositive = parseFloat(m1AccPositiveElement.value);
+    let m1AccNegative = parseFloat(m1AccNegativeElement.value);
+
+    let m2AccPositive = parseFloat(m2AccPositiveElement.value);
+    let m2AccNegative = parseFloat(m2AccNegativeElement.value);
+
+    let correlacionPositive = parseFloat(correlacionPositiveElement.value);
+    let correlacionNegative = parseFloat(correlacionNegativeElement.value);
+
+
+    let probabilidadesPositive = computeJointBernoulliProbabilities(m1AccPositive, m2AccPositive, correlacionPositive);
+    let probabilidadesNegative = computeJointBernoulliProbabilities(m1AccNegative, m2AccNegative, correlacionNegative);
+
+
     let probFNcuandoP;
     let probFPcuandoN;
     let probFNcuandoN;
     let probFPcuandoP;
 
-    let m1AccPositive = parseFloat(m1AccPositiveElement.value);
-    let m1AccNegative = parseFloat(m1AccNegativeElement.value);
 
-    if(tipoFusionador.value == 'or'){
-        probFNcuandoP = 0;
-        probFPcuandoN = 1 - m1AccNegative;
-        probFNcuandoN = 1 - m1AccPositive;
-        probFPcuandoP = 1;
-    }else if(tipoFusionador.value == 'and'){
-        probFNcuandoP = 1 - m1AccPositive;
-        probFPcuandoN = 0;
-        probFNcuandoN = 1;
-        probFPcuandoP = 1 - m1AccNegative;
-    }else{
+    if (typeof(fusionadores[tipoFusionador.value+"FusionadorFalloIntervencionResultado2Promedio"]) === "function") {
+        [probFNcuandoP, probFPcuandoN, probFNcuandoN, probFPcuandoP] = 
+            fusionadores[tipoFusionador.value+"FusionadorFalloIntervencionResultado2Promedio"](probabilidadesPositive, probabilidadesNegative);
+    } else {
         throw new Error("Fusionador no soportado. Usar 'or' o 'and'.");
     }
+
+
 
     // Costos para el modelo 2
 
@@ -120,52 +144,35 @@ function estimarEvaluacion(){
 
 
 
-
-    // Calcular confusiónes
-
-    let cantidadSistemaTP = 0;
-    let cantidadSistemaTN = 0;
-    let cantidadSistemaFN = 0;
-    let cantidadSistemaFP = 0;
-
-    let cantidadModelo2TP = 0;
-    let cantidadModelo2TN = 0;
-    let cantidadModelo2FN = 0;
-    let cantidadModelo2FP = 0;
-    
-
-
-
     // Versión sin generar instancias calculando la probabilidad conjunta y multiplicando por la cantidad
     // La función devuelve 1 si la instancia acertó para la clase a la que pertenecía y 0 si predijo erróneamente
 
     let probabilidadesPositive = computeJointBernoulliProbabilities(m1AccPositive, m2AccPositive, correlacionPositive);
     let probabilidadesNegative = computeJointBernoulliProbabilities(m1AccNegative, m2AccNegative, correlacionNegative);
 
-    if(tipoFusionador.value == 'or'){
-        cantidadSistemaTP = probabilidadesPositive[1] + probabilidadesPositive[2] + probabilidadesPositive[3];
-        cantidadSistemaTN = probabilidadesNegative[3];
-        cantidadSistemaFN = probabilidadesPositive[0];
-        cantidadSistemaFP = probabilidadesNegative[0] + probabilidadesNegative[1] + probabilidadesNegative[2];
-    }else if(tipoFusionador.value == 'and'){
-        cantidadSistemaTP = probabilidadesPositive[3];
-        cantidadSistemaTN =  + probabilidadesNegative[1] + probabilidadesNegative[2] + probabilidadesNegative[3];
-        cantidadSistemaFN = probabilidadesPositive[0] + probabilidadesPositive[1] + probabilidadesPositive[2];
-        cantidadSistemaFP = probabilidadesNegative[0];
-    }else{
+    // Confusiones Modelo 2
+    let cantidadModelo2TP = (probabilidadesPositive[1] + probabilidadesPositive[3]) * cantidadPositive;
+    let cantidadModelo2TN = (probabilidadesNegative[1] + probabilidadesNegative[3]) * cantidadNegative;
+    let cantidadModelo2FN = (probabilidadesPositive[0] + probabilidadesPositive[2]) * cantidadPositive;
+    let cantidadModelo2FP = (probabilidadesNegative[0] + probabilidadesNegative[2]) * cantidadNegative;
+
+
+    // Confusiones Sistema
+
+    let probabilidadAciertoSistemaPositive;
+    let probabilidadAciertoSistemaNegative;
+
+    if (typeof(fusionadores[tipoFusionador.value+"FusionadorAciertoPromedio"]) === "function") {
+        [probabilidadAciertoSistemaPositive, probabilidadAciertoSistemaNegative] = 
+            fusionadores[tipoFusionador.value+"FusionadorAciertoPromedio"](probabilidadesPositive, probabilidadesNegative);
+    } else {
         throw new Error("Fusionador no soportado. Usar 'or' o 'and'.");
     }
 
-    cantidadSistemaTP = cantidadSistemaTP * cantidadPositive;
-    cantidadSistemaTN = cantidadSistemaTN * cantidadNegative;
-    cantidadSistemaFN = cantidadSistemaFN * cantidadPositive;
-    cantidadSistemaFP = cantidadSistemaFP * cantidadNegative;
-
-    cantidadModelo2TP = cantidadPositive * m2AccPositive;
-    cantidadModelo2TN = cantidadNegative * m2AccNegative;
-    cantidadModelo2FN = cantidadPositive * (1 - m2AccPositive);
-    cantidadModelo2FP = cantidadNegative * (1 - m2AccNegative);
-
+    let cantidadSistemaTP = probabilidadAciertoSistemaPositive * cantidadPositive;
+    let cantidadSistemaTN = probabilidadAciertoSistemaNegative * cantidadNegative;
+    let cantidadSistemaFN = (1 - probabilidadAciertoSistemaPositive) * cantidadPositive;
+    let cantidadSistemaFP = (1 - probabilidadAciertoSistemaNegative) * cantidadNegative;
 
 
 
@@ -176,7 +183,6 @@ function estimarEvaluacion(){
     maxDecimals(cantidadSistemaFP,2)+'*'+maxDecimals(costoNegative,2)+'  =  '+
     maxDecimals(cantidadSistemaFN*costoPositive+
     cantidadSistemaFP*costoNegative,2);
-
 
 
 
@@ -212,20 +218,13 @@ function estimarEvaluacion(){
     let probFNcuandoN;
     let probFPcuandoP;
 
-    if(tipoFusionador.value == 'or'){
-        probFNcuandoP = 0;
-        probFPcuandoN = 1 - m1AccNegative;
-        probFNcuandoN = 1 - m1AccPositive;
-        probFPcuandoP = 1;
-    }else if(tipoFusionador.value == 'and'){
-        probFNcuandoP = 1 - m1AccPositive;
-        probFPcuandoN = 0;
-        probFNcuandoN = 1;
-        probFPcuandoP = 1 - m1AccNegative;
-    }else{
+    if (typeof(fusionadores[tipoFusionador.value+"FusionadorFalloIntervencionResultado2Promedio"]) === "function") {
+        [probFNcuandoP, probFPcuandoN, probFNcuandoN, probFPcuandoP] = 
+            fusionadores[tipoFusionador.value+"FusionadorFalloIntervencionResultado2Promedio"](probabilidadesPositive, probabilidadesNegative);
+    } else {
         throw new Error("Fusionador no soportado. Usar 'or' o 'and'.");
     }
-
+    
     let peorCasoAciertosEnPositive = Math.min(cantidadModelo2TP, probFNcuandoP * cantidadPositive);
     let peorCasoAciertosEnNegative = Math.min(cantidadModelo2TN, probFPcuandoN * cantidadNegative);
     
@@ -242,7 +241,7 @@ function estimarEvaluacion(){
     (peorCasoAciertosEnNegative + 
     Math.min(probFPcuandoP * cantidadNegative - peorCasoAciertosEnNegative, cantidadModelo2FP)) * 
     costoNegative,2);
-}
+}   
 
 
 
@@ -276,8 +275,14 @@ function generarInstancias(){
 
 
 
+    // Generar instancias
+    // La función devuelve 1 si la instancia acertó para la clase a la que pertenecía y 0 si predijo erróneamente
+    let instanciasPositive = generateCorrelatedBernoulli(m1AccPositive, m2AccPositive, correlacionPositive, cantidadPositive);
+    let instanciasNegative = generateCorrelatedBernoulli(m1AccNegative, m2AccNegative, correlacionNegative, cantidadNegative);
 
-    // Calcular confusiónes
+
+
+    // Calcular confusiónes 
 
     let cantidadSistemaTP = 0;
     let cantidadSistemaTN = 0;
@@ -288,88 +293,50 @@ function generarInstancias(){
     let cantidadModelo2TN = 0;
     let cantidadModelo2FN = 0;
     let cantidadModelo2FP = 0;
-    
-    
-
-    
-    // Versión generando instancias en base a la probabilidad conjunta
-    // La función devuelve 1 si la instancia acertó para la clase a la que pertenecía y 0 si predijo erróneamente
-
-    let instanciasPositive = generateCorrelatedBernoulli(m1AccPositive, m2AccPositive, correlacionPositive, cantidadPositive);
-    let instanciasNegative = generateCorrelatedBernoulli(m1AccNegative, m2AccNegative, correlacionNegative, cantidadNegative);
-    let aciertosM1Positive = 0;
-    let aciertosM1Negative = 0;
-    
 
     for(const [predM1, predM2] of instanciasPositive){
-        // Confusiónes modelo 2
         if(predM2 == 1){
             cantidadModelo2TP = cantidadModelo2TP + 1;
         }else{
             cantidadModelo2FN = cantidadModelo2FN + 1;
         }
-
-        if(predM1 == 1){
-            aciertosM1Positive = aciertosM1Positive + 1;
-        }
-
-
-
-        // Confusiónes sistema
-        if(tipoFusionador.value == 'or'){
-            if(predM1 == 0 && predM2 == 0){
-                cantidadSistemaFN = cantidadSistemaFN + 1;
-            }else{
-                cantidadSistemaTP = cantidadSistemaTP + 1;
-            }
-        }
-        else if(tipoFusionador.value == 'and'){
-            if(predM1 == 1 && predM2 == 1){
-                cantidadSistemaTP = cantidadSistemaTP + 1;
-            }else{
-                cantidadSistemaFN = cantidadSistemaFN + 1;
-            }
-        }
-        else{
-            throw new Error("Fusionador no soportado. Usar 'or' o 'and'.");
-        }
-        cantidadSistemaTP = cantidadSistemaTP;
-        cantidadSistemaFN = cantidadSistemaFN;
     }
 
-
     for(const [predM1, predM2] of instanciasNegative){
-        // Confusiónes modelo 2
         if(predM2 == 1){
             cantidadModelo2TN = cantidadModelo2TN + 1;
         }else{
             cantidadModelo2FP = cantidadModelo2FP + 1;
         }
+    }
 
-        if(predM1 == 1){
-            aciertosM1Negative = aciertosM1Negative + 1;
-        }
 
-        // Confusiónes sistema
-        if(tipoFusionador.value == 'or'){
-            if(predM1 == 1 && predM2 == 1){
-                cantidadSistemaTN = cantidadSistemaTN + 1;
-            }else{
-                cantidadSistemaFP = cantidadSistemaFP + 1;
-            }
-        }
-        else if(tipoFusionador.value == 'and'){
-            if(predM1 == 0 && predM2 == 0){
-                cantidadSistemaFP = cantidadSistemaFP + 1;
-            }else{
-                cantidadSistemaTN = cantidadSistemaTN + 1;
-            }
-        }
-        else{
-            throw new Error("Fusionador no soportado. Usar 'or' o 'and'.");
+
+    let instanciasSistemaPositive;
+    let instanciasSistemaNegative;
+
+    if (typeof(fusionadores[tipoFusionador.value+"FusionadorAciertoInstancias"]) === "function") {
+        [instanciasSistemaPositive, instanciasSistemaNegative] = 
+            fusionadores[tipoFusionador.value+"FusionadorAciertoInstancias"](instanciasPositive, instanciasNegative);
+    } else {
+        throw new Error("Fusionador no soportado. Usar 'or' o 'and'.");
+    }
+
+    for(const instancia of instanciasSistemaPositive){
+        if(instancia){
+            cantidadSistemaTP = cantidadSistemaTP + 1;
+        }else{
+            cantidadSistemaFN = cantidadSistemaFN + 1;
         }
     }
 
+    for(const instancia of instanciasSistemaNegative){
+        if(instancia){
+            cantidadSistemaFP = cantidadSistemaFP + 1;
+        }else{
+            cantidadSistemaTN = cantidadSistemaTN + 1;
+        }
+    }
 
 
 
@@ -380,7 +347,6 @@ function generarInstancias(){
     maxDecimals(cantidadSistemaFP,2)+'*'+maxDecimals(costoNegative,2)+'  =  '+
     maxDecimals(cantidadSistemaFN*costoPositive+
     cantidadSistemaFP*costoNegative, 2);
-
 
 
     
@@ -408,7 +374,6 @@ function generarInstancias(){
 
 
 
-
     // Costo Peor Caso
 
     let probFNcuandoP;
@@ -416,20 +381,13 @@ function generarInstancias(){
     let probFNcuandoN;
     let probFPcuandoP;
 
-    if(tipoFusionador.value == 'or'){
-        probFNcuandoP = 0;
-        probFPcuandoN = 1 - m1AccNegative;
-        probFNcuandoN = 1 - m1AccPositive;
-        probFPcuandoP = 1;
-    }else if(tipoFusionador.value == 'and'){
-        probFNcuandoP = 1 - m1AccPositive;
-        probFPcuandoN = 0;
-        probFNcuandoN = 1;
-        probFPcuandoP = 1 - m1AccNegative;
-    }else{
+    if (typeof(fusionadores[tipoFusionador.value+"FusionadorFalloIntervencionResultado2Instancias"]) === "function") {
+        [probFNcuandoP, probFPcuandoN, probFNcuandoN, probFPcuandoP] = 
+            fusionadores[tipoFusionador.value+"FusionadorFalloIntervencionResultado2Instancias"](instanciasPositive, instanciasNegative);
+    } else {
         throw new Error("Fusionador no soportado. Usar 'or' o 'and'.");
     }
-
+    
     let peorCasoAciertosEnPositive = Math.min(cantidadModelo2TP, probFNcuandoP * cantidadPositive);
     let peorCasoAciertosEnNegative = Math.min(cantidadModelo2TN, probFPcuandoN * cantidadNegative);
     

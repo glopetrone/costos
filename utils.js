@@ -8,27 +8,6 @@ const m2AccNegativeElement = document.getElementById("m2-acc-negative");
 
 
 
-export function eventListeners(){
-    const backgroundColorElement = document.getElementById("page-background-color");
-    const containerColorElement = document.getElementById("container-background-color");
-
-    backgroundColorElement.addEventListener('change', cambiarColor);
-    containerColorElement.addEventListener('change', cambiarColor);
-
-
-    m1AccPositiveElement.addEventListener('change', respetarLimites);
-    m1AccNegativeElement.addEventListener('change', respetarLimites);
-    m2AccPositiveElement.addEventListener('change', respetarLimites);
-    m2AccNegativeElement.addEventListener('change', respetarLimites);
-    correlacionPositiveElement.addEventListener('change', respetarLimites);
-    correlacionNegativeElement.addEventListener('change', respetarLimites);
-
-    respetarLimites();
-}
-
-
-
-
 export function maxDecimals(number, decimalQuantity){
     let numberString = number.toString();
     if(numberString.includes('.')){
@@ -48,7 +27,7 @@ export function maxDecimals(number, decimalQuantity){
 
 
 
-function cambiarColor(){
+export function cambiarColor(){
     document.body.style.backgroundColor = document.getElementById("page-background-color").value;
     document.getElementById("container").style.backgroundColor = document.getElementById("container-background-color").value;
 }
@@ -56,7 +35,7 @@ function cambiarColor(){
 
 
 
-function respetarLimites(){
+export function respetarLimites(){
     let correlacionPositive = correlacionPositiveElement.value;
 
     let p = parseFloat(m1AccPositiveElement.value);
