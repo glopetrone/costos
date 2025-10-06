@@ -66,74 +66,133 @@
         <!-- Datos -->
 
             <h2>Datos</h2>
-            <div class="input-group">
-                <label for="costo-positive">Costo Positive:</label>
-                <input type="number" id="costo-positive" name="costo-positive" min="0" value="4">
-            </div>
-            <div class="input-group">
-                <label for="costo-negative">Costo Negative:</label>
-                <input type="number" id="costo-negative" name="costo-negative" min="0" value="1">
-            </div>
-            <div class="input-group">
-                <label for="cantidad-positive">Cantidad Positive:</label>
-                <input type="number" id="cantidad-positive" name="cantidad-positive" min="0" value="100">
-            </div>
-            <div class="input-group">
-                <label for="cantidad-negative">Cantidad Negative:</label>
-                <input type="number" id="cantidad-negative" name="cantidad-negative" min="0" value="200">
-            </div>
-
+                <div class="input-group">
+                    <label for="costo-positive">Costo Positive:</label>
+                    <input type="number" id="costo-positive" name="costo-positive" min="0" value="1">
+                </div>
+                <div class="input-group">
+                    <label for="costo-negative">Costo Negative:</label>
+                    <input type="number" id="costo-negative" name="costo-negative" min="0" value="1">
+                </div>
+                <div class="input-group">
+                    <label for="cantidad-positive-test-m1">Cantidad Positive:</label>
+                    <input type="number" id="cantidad-positive-test-m1" name="cantidad-positive-test-m1" min="0" value="800">
+                </div>
+                <div class="input-group">
+                    <label for="cantidad-negative-test-m1">Cantidad Negative:</label>
+                    <input type="number" id="cantidad-negative-test-m1" name="cantidad-negative-test-m1" min="0" value="1500">
+                </div>
 
         
         <!-- Costos -->
         
         <h2>Costos</h2>
-        
-        <div class="inline-group">
-            <h3>Suma</h3>
-            <div class="inline-input">
-                <label for="suma-tp">TP:</label>
-                <input type="text" id="suma-tp">
-            </div>
-            <div class="inline-input">
-                <label for="suma-tn">TN:</label>
-                <input type="text" id="suma-tn">
-            </div>
-            <div class="inline-input">
-                <label for="suma-fn">FN:</label>
-                <input type="text" id="suma-fn">
-            </div>
-            <div class="inline-input">
-                <label for="suma-fp">FP:</label>
-                <input type="text" id="suma-fp">
-            </div>
-        </div>
-        
-        <div class="inline-group">
-            <h3>Resta</h3>
-            <div class="inline-input">
-                <label for="resta-tp">TP:</label>
-                <input type="text" id="resta-tp">
-            </div>
-            <div class="inline-input">
-                <label for="resta-tn">TN:</label>
-                <input type="text" id="resta-tn">
-            </div>
-            <div class="inline-input">
-                <label for="resta-fn">FN:</label>
-                <input type="text" id="resta-fn">
-            </div>
-            <div class="inline-input">
-                <label for="resta-fp">FP:</label>
-                <input type="text" id="resta-fp">
-            </div>
-        </div>
-        <button type="button" id="calculate-cost-btn">Calcular Costos</button>
 
+        <div class="inline-group">
+            <h3>Confusiones M1</h3>
+            <div class="inline-right-align">
+                <div class="inline-input">
+                    <label for="m1-tp">TP:</label>
+                    <input type="text" id="m1-tp" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="m1-tn">TN:</label>
+                    <input type="text" id="m1-tn" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="m1-fn">FN:</label>
+                    <input type="text" id="m1-fn" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="m1-fp">FP:</label>
+                    <input type="text" id="m1-fp" readonly>
+                </div>
+            </div>
+        </div>
+        
+        <div class="inline-group">
+            <h3>Costos Suma</h3>
+            <div class="inline-right-align">
+                <div class="inline-input">
+                    <label for="suma-tp">TP:</label>
+                    <input type="text" id="suma-tp" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="suma-tn">TN:</label>
+                    <input type="text" id="suma-tn" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="suma-fn">FN:</label>
+                    <input type="text" id="suma-fn" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="suma-fp">FP:</label>
+                    <input type="text" id="suma-fp" readonly>
+                </div>
+            </div>
+        </div>
+        
+        <div class="inline-group">
+            <h3>Costos Resta</h3>
+            <div class="inline-right-align">
+                <div class="inline-input">
+                    <label for="resta-tp">TP:</label>
+                    <input type="text" id="resta-tp" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="resta-tn">TN:</label>
+                    <input type="text" id="resta-tn" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="resta-fn">FN:</label>
+                    <input type="text" id="resta-fn" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="resta-fp">FP:</label>
+                    <input type="text" id="resta-fp" readonly>
+                </div>
+            </div>
+        </div>
+
+        <div class="costButtons">
+            <button type="button" id="calculate-cost-btn" class="inline-group">Calcular Costos</button>
+            <button type="button" id="test-cost-btn" class="inline-group">Testear Costos</button>
+        </div>
 
         <!-- Resultados -->
 
-            <h2>Evaluación</h2>
+        <h2>Evaluación</h2>
+
+        <div class="input-group">
+            <label for="cantidad-positive-test-m2">Cantidad Positive:</label>
+            <input type="number" id="cantidad-positive-test-m2" min="0" value="100">
+            </div>
+        <div class="input-group">
+            <label for="cantidad-negative-test-m2">Cantidad Negative:</label>
+            <input type="number" id="cantidad-negative-test-m2" min="0" value="200">
+        </div>
+
+        <div class="inline-group">
+            <h3>Confusiones M2</h3>
+            <div class="inline-right-align">
+                <div class="inline-input">
+                    <label for="m2-tp">TP:</label>
+                    <input type="text" id="m2-tp" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="m2-tn">TN:</label>
+                    <input type="text" id="m2-tn" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="m2-fn">FN:</label>
+                    <input type="text" id="m2-fn" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="m2-fp">FP:</label>
+                    <input type="text" id="m2-fp" readonly>
+                </div>
+            </div>
+        </div>
 
             
             <div class="result-group">
@@ -163,7 +222,7 @@
     </div>
 
     <script type="module">
-        import { eventListeners } from '/script.js';
+        import { eventListeners } from './script.js';
  
         eventListeners();
     </script>

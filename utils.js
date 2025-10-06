@@ -10,6 +10,25 @@ const m2AccNegativeElement = document.getElementById("m2-acc-negative");
 
 export function maxDecimals(number, decimalQuantity){
     let numberString = number.toString();
+    let eps = 10**(-5);
+
+    if(Math.abs(10*number - Math.round(10*number)) < 10*eps){
+        if(Math.abs(Math.round(10*number)) >= 10 && Math.round(10*number) % 10 == 0){
+            numberString = Math.round(10*number).toString().slice(0, Math.round(10*number).toString().length - 1);
+        }else if(Math.abs(Math.round(10*number)) >= 10 && Math.round(10*number) % 10 != 0){
+                numberString = Math.round(10*number).toString().slice(0, Math.round(10*number).toString().length - 1) + "." + Math.round(10*number).toString().slice(Math.round(10*number).toString().length - 1, Math.round(10*number).toString().length);
+        }else if(Math.sign(Math.round(10*number)) > 0){
+            numberString = "0."+Math.round(10*number).toString()[0];
+        }else if(Math.sign(Math.round(10*number)) < 0){
+            numberString = "-0."+Math.round(10*number).toString()[1];
+        }else if(Math.sign(Math.round(10*number)) == 0){
+            numberString = "0";
+        }
+    }else{
+        numberString = number.toString();
+    }
+
+
     if(numberString.includes('.')){
         numberString = numberString.slice(0, Math.min(numberString.indexOf('.')+decimalQuantity+1, numberString.length));
         let idx = numberString.length-1;
@@ -21,6 +40,7 @@ export function maxDecimals(number, decimalQuantity){
             numberString = numberString.slice(0, idx);
         }
     }
+
     return numberString;
 }
 

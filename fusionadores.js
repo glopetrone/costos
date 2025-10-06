@@ -1,17 +1,17 @@
-export function andFusionadorFalloIntervencionResultado2Promedio(probabilidadesPositive, probabilidadesNegative){
-    return  [probabilidadesPositive[0] + probabilidadesPositive[1],
+export function andFusionadorFalloIntervencionResultado2Promedio(accuracyPositive, accuracyNegative){
+    return  [1 - accuracyPositive,
             0,
             1,
-            probabilidadesNegative[0] + probabilidadesNegative[1]];
+            1 - accuracyNegative];
 }
 
 
 
 
-export function orFusionadorFalloIntervencionResultado2Promedio(probabilidadesPositive, probabilidadesNegative){
+export function orFusionadorFalloIntervencionResultado2Promedio(accuracyPositive, accuracyNegative){
     return  [0,
-            probabilidadesNegative[0]+probabilidadesNegative[1],
-            probabilidadesPositive[0]+probabilidadesPositive[1],
+            1 - accuracyNegative,
+            1 - accuracyPositive,
             1];
 }
 

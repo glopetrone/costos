@@ -76,7 +76,6 @@ button:hover {
 
 h3 {
     color: black;
-    margin-right: 160px;
 }
 
 input[readonly] {
@@ -86,8 +85,15 @@ input[readonly] {
 
 .inline-group {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.inline-right-align {
+    display: flex;
     gap: 10px;
+    flex-direction: row;
 }
 
 .inline-input {
@@ -102,7 +108,7 @@ input[readonly] {
 }
 
 .inline-input input {
-    width: 80px;
+    width: 78px;
 }
 
 .evalButtons {
@@ -110,6 +116,13 @@ input[readonly] {
     justify-content: center;
     max-width: 50%;
     margin-left: 25%;
+}
+
+.costButtons {
+    display: flex;
+    justify-content: center;
+    max-width: 44%;
+    margin-left: 28%;
 }
 
 /* Responsive design */
