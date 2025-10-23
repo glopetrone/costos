@@ -324,9 +324,6 @@ function estimarEvaluacion(){
     
     let peorCasoAciertosEnPositive = Math.min(cantidadModelo2TP, probFNcuandoP * cantidadPositive);
     let peorCasoAciertosEnNegative = Math.min(cantidadModelo2TN, probFPcuandoN * cantidadNegative);
-
-    console.log(m1AccPositiveMedicion, m1AccNegativeMedicion);
-
     
     peorCasoSistemaElement.value = 
     '('+maxDecimals(peorCasoAciertosEnPositive,2)+'+'+
