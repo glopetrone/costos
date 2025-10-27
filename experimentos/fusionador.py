@@ -72,8 +72,8 @@ def orFusionadorAciertoPromedio(probabilidadesPositive, probabilidadesNegative):
 def andFusionadorAciertoInstancias(instanciasPositive, instanciasNegative):
     # Devuelve 1 si el fusionador predice que la instancia es de clase Positiva
 
-    resultadosPositive = np.zeros_like(instanciasPositive)
-    resultadosNegative = np.zeros_like(instanciasNegative)
+    resultadosPositive = np.zeros(len(instanciasPositive))
+    resultadosNegative = np.zeros(len(instanciasNegative))
 
     resultadosPositive[np.logical_and(instanciasPositive[:,0] == 1, instanciasPositive[:,1] == 1)] = 1
     resultadosNegative[np.logical_and(instanciasNegative[:,0] == 0, instanciasNegative[:,1] == 0)] = 1

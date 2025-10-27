@@ -194,7 +194,7 @@ class Sistema():
 
         # Evaluación del sistema
 
-        self.evalSistema = float(cantidadSistemaFN*self.costoPositive + cantidadSistemaFP * self.costoNegative)
+        self.evalSistema = float(cantidadSistemaFN * self.costoPositive + cantidadSistemaFP * self.costoNegative)
 
 
         # Evaluación modelo 2
@@ -223,8 +223,8 @@ class Sistema():
 
         # Calcular confusiones Modelo 2
 
-        cantidadModelo2TP = int(np.sum(instanciasPositive[:,0] == 1))
-        cantidadModelo2TN = int(np.sum(instanciasNegative[:,0] == 1))
+        cantidadModelo2TP = int(np.sum(instanciasPositive[:,1] == 1))
+        cantidadModelo2TN = int(np.sum(instanciasNegative[:,1] == 1))
         cantidadModelo2FN = int(cantidadPositiveTestM2 - cantidadModelo2TP)
         cantidadModelo2FP = int(cantidadNegativeTestM2 - cantidadModelo2TN)
 
