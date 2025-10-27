@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cost Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <input type="color" id="page-background-color" value="#354535" class="color-input">
+    <div id="container">
+        <input type="color" id="container-background-color" value="#479B71" class="color-input">
+
+        <h1>Cost Calculator</h1>
+
+        <!-- Modelo 1 -->
+
+            <h2>Modelo 1</h2>
+            <div class="input-group">
+                <label for="m1-acc-positive">Accuracy Positive:</label>
+                <input type="number" id="m1-acc-positive" name="m1-acc-positive" step="0.01" min="0" max="1" value="0.8">
+            </div>
+            <div class="input-group">
+                <label for="m1-acc-negative">Accuracy Negative:</label>
+                <input type="number" id="m1-acc-negative" name="m1-acc-negative" step="0.01" min="0" max="1" value="0.6">
+            </div>
+
+
+        <!-- Modelo 2 -->
+
+            <h2>Modelo 2</h2>
+            <div class="input-group">
+                <label for="m2-acc-positive">Accuracy Positive:</label>
+                <input type="number" id="m2-acc-positive" name="m2-acc-positive" step="0.01" min="0" max="1" value="0.5">
+            </div>
+            <div class="input-group">
+                <label for="m2-acc-negative">Accuracy Negative:</label>
+                <input type="number" id="m2-acc-negative" name="m2-acc-negative" step="0.01" min="0" max="1" value="0.4">
+            </div>
+
+
+        <!-- Correlación -->
+
+            <h2>Correlación</h2>
+            <div class="input-group">
+                <label for="correlacion-positive">Correlación Positive:</label>
+                <input type="number" id="correlacion-positive" name="correlacion-positive" step="0.01" min="-1" max="1" value="0">
+            </div>
+            <div class="input-group">
+                <label for="correlacion-negative">Correlación Negative:</label>
+                <input type="number" id="correlacion-negative" name="correlacion-negative" step="0.01" min="-1" max="1" value="0">
+            </div>
+            
+
+
+        <!-- Fusionador -->
+
+            <h2>Fusionador</h2>
+            <div class="input-group">
+                <label for="tipo">Tipo:</label>
+                <input type="text" id="tipo" name="tipo" value="or">
+            </div>
+
+
+
+        <!-- Datos -->
+
+            <h2>Datos</h2>
+                <div class="input-group">
+                    <label for="costo-positive">Costo Positive:</label>
+                    <input type="number" id="costo-positive" name="costo-positive" min="0" value="1">
+                </div>
+                <div class="input-group">
+                    <label for="costo-negative">Costo Negative:</label>
+                    <input type="number" id="costo-negative" name="costo-negative" min="0" value="1">
+                </div>
+                <div class="input-group">
+                    <label for="cantidad-positive-test-m1">Cantidad Positive:</label>
+                    <input type="number" id="cantidad-positive-test-m1" name="cantidad-positive-test-m1" min="0" value="800">
+                </div>
+                <div class="input-group">
+                    <label for="cantidad-negative-test-m1">Cantidad Negative:</label>
+                    <input type="number" id="cantidad-negative-test-m1" name="cantidad-negative-test-m1" min="0" value="1500">
+                </div>
+
+        
+        <!-- Costos -->
+        
+        <h2>Costos</h2>
+
+        <div class="inline-group">
+            <h3>Confusiones M1</h3>
+            <div class="inline-right-align">
+                <div class="inline-input">
+                    <label for="m1-tp">TP:</label>
+                    <input type="text" id="m1-tp" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="m1-tn">TN:</label>
+                    <input type="text" id="m1-tn" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="m1-fn">FN:</label>
+                    <input type="text" id="m1-fn" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="m1-fp">FP:</label>
+                    <input type="text" id="m1-fp" readonly>
+                </div>
+            </div>
+        </div>
+        
+        <div class="inline-group">
+            <h3>Costos Suma</h3>
+            <div class="inline-right-align">
+                <div class="inline-input">
+                    <label for="suma-tp">TP:</label>
+                    <input type="text" id="suma-tp" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="suma-tn">TN:</label>
+                    <input type="text" id="suma-tn" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="suma-fn">FN:</label>
+                    <input type="text" id="suma-fn" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="suma-fp">FP:</label>
+                    <input type="text" id="suma-fp" readonly>
+                </div>
+            </div>
+        </div>
+        
+        <div class="inline-group">
+            <h3>Costos Resta</h3>
+            <div class="inline-right-align">
+                <div class="inline-input">
+                    <label for="resta-tp">TP:</label>
+                    <input type="text" id="resta-tp" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="resta-tn">TN:</label>
+                    <input type="text" id="resta-tn" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="resta-fn">FN:</label>
+                    <input type="text" id="resta-fn" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="resta-fp">FP:</label>
+                    <input type="text" id="resta-fp" readonly>
+                </div>
+            </div>
+        </div>
+
+        <div class="costButtons">
+            <button type="button" id="calculate-cost-btn" class="inline-group">Calcular Costos</button>
+            <button type="button" id="test-cost-btn" class="inline-group">Testear Costos</button>
+        </div>
+
+        <!-- Resultados -->
+
+        <h2>Evaluación</h2>
+
+        <div class="input-group">
+            <label for="cantidad-positive-test-m2">Cantidad Positive:</label>
+            <input type="number" id="cantidad-positive-test-m2" min="0" value="100">
+            </div>
+        <div class="input-group">
+            <label for="cantidad-negative-test-m2">Cantidad Negative:</label>
+            <input type="number" id="cantidad-negative-test-m2" min="0" value="200">
+        </div>
+
+        <div class="inline-group">
+            <h3>Confusiones M2</h3>
+            <div class="inline-right-align">
+                <div class="inline-input">
+                    <label for="m2-tp">TP:</label>
+                    <input type="text" id="m2-tp" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="m2-tn">TN:</label>
+                    <input type="text" id="m2-tn" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="m2-fn">FN:</label>
+                    <input type="text" id="m2-fn" readonly>
+                </div>
+                <div class="inline-input">
+                    <label for="m2-fp">FP:</label>
+                    <input type="text" id="m2-fp" readonly>
+                </div>
+            </div>
+        </div>
+
+            
+            <div class="result-group">
+                <div class="input-group">
+                    <label for="peor-caso-sistema">Peor Caso Sistema:</label>
+                    <input type="text" id="peor-caso-sistema" readonly>
+                </div>
+                <div class="input-group">
+                    <label for="eval-sistema">Evaluación Sistema:</label>
+                    <input type="text" id="eval-sistema" readonly>
+                </div>
+                <div class="input-group">
+                    <label for="suma-eval-modelo2">Evaluación Modelo 2 Suma:</label>
+                    <input type="text" id="suma-eval-modelo2" readonly>
+                </div>
+                <div class="input-group">
+                    <label for="resta-eval-modelo2">Evaluación Modelo 2 Resta:</label>
+                    <input type="text" id="resta-eval-modelo2" readonly>
+                </div>
+            </div>
+            
+            <div class="evalButtons">
+                <button type="button" id="estimate-evaluation-btn" class="inline-group">Estimar Evaluación</button>
+                <button type="button" id="generate-instances-btn" class="inline-group">Generar Instancias</button>
+            </div>
+
+    </div>
+
+    <script type="module">
+        import { eventListeners } from './script.js';
+ 
+        eventListeners();
+    </script>
+
+</body>
+
+</html>

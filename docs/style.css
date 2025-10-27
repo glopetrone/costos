@@ -1,0 +1,143 @@
+/* styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #354535;
+    margin: 0;
+    padding: 20px;
+}
+
+#container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #479B71;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: black;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: black;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.color-input {
+    padding: 0px;
+}
+
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input {
+    padding: 8px;
+    border: 2px solid black;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+button {
+    background-color: #3d56e0;
+    color: black;
+    padding: 10px 20px;
+    border: solid 3px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    display: block;
+    margin: 20px auto;
+}
+
+button:hover {
+    background-color: rgb(220,220,220);
+}
+
+.result-group {
+    margin-bottom: 20px;
+}
+
+h3 {
+    color: black;
+}
+
+input[readonly] {
+    background-color: #f9f9f9;
+    cursor: not-allowed;
+}
+
+.inline-group {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.inline-right-align {
+    display: flex;
+    gap: 10px;
+    flex-direction: row;
+}
+
+.inline-input {
+    display: flex;
+    align-items: center;
+}
+
+.inline-input label {
+    margin-right: 5px;
+    margin-bottom: 0;
+}
+
+.inline-input input {
+    width: 80px;
+}
+
+.evalButtons {
+    display: flex;
+    justify-content: center;
+    max-width: 50%;
+    margin-left: 25%;
+}
+
+.costButtons {
+    display: flex;
+    justify-content: center;
+    max-width: 44%;
+    margin-left: 28%;
+}
+
+/* Responsive design */
+@media (min-width: 600px) {
+    .input-group {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    label {
+        flex: 1;
+        margin-right: 10px;
+        margin-bottom: 0;
+    }
+
+    input {
+        flex: 2;
+    }
+}
