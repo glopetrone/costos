@@ -46,7 +46,10 @@ class Sistema():
         self.probFNcuandoN = None
         self.probFPcuandoP = None
 
+        self.peorCasoSistemaFN = None
+        self.peorCasoSistemaFP = None
         self.peorCasoSistema = None
+
         self.evalSistema = None
         self.sumaEvalModelo2 = None
         self.restaEvalModelo2 = None
@@ -207,8 +210,11 @@ class Sistema():
         
         peorCasoAciertosEnPositive = float(min(cantidadModelo2TP, self.probFNcuandoP * cantidadPositiveTestM2))
         peorCasoAciertosEnNegative = float(min(cantidadModelo2TN, self.probFPcuandoN * cantidadNegativeTestM2))
+
+        self.peorCasoSistemaFN = float(peorCasoAciertosEnPositive + min(self.probFNcuandoN * cantidadPositiveTestM2 - peorCasoAciertosEnPositive, cantidadModelo2FN))
+        self.peorCasoSistemaFP = float(peorCasoAciertosEnNegative + min(self.probFPcuandoP * cantidadNegativeTestM2 - peorCasoAciertosEnNegative, cantidadModelo2FP))
         
-        self.peorCasoSistema = float((peorCasoAciertosEnPositive + min(self.probFNcuandoN * cantidadPositiveTestM2 - peorCasoAciertosEnPositive, cantidadModelo2FN)) * self.costoPositive + (peorCasoAciertosEnNegative + min(self.probFPcuandoP * cantidadNegativeTestM2 - peorCasoAciertosEnNegative, cantidadModelo2FP)) * self.costoNegative)
+        self.peorCasoSistema = float(self.peorCasoSistemaFN * self.costoPositive + self.peorCasoSistemaFP * self.costoNegative)
 
 
 
@@ -267,5 +273,8 @@ class Sistema():
 
         peorCasoAciertosEnPositive = float(min(cantidadModelo2TP, self.probFNcuandoP * cantidadPositiveTestM2))
         peorCasoAciertosEnNegative = float(min(cantidadModelo2TN, self.probFPcuandoN * cantidadNegativeTestM2))
+
+        self.peorCasoSistemaFN = float(peorCasoAciertosEnPositive + min(self.probFNcuandoN * cantidadPositiveTestM2 - peorCasoAciertosEnPositive, cantidadModelo2FN))
+        self.peorCasoSistemaFP = float(peorCasoAciertosEnNegative + min(self.probFPcuandoP * cantidadNegativeTestM2 - peorCasoAciertosEnNegative, cantidadModelo2FP))
         
-        self.peorCasoSistema = float((peorCasoAciertosEnPositive + min(self.probFNcuandoN * cantidadPositiveTestM2 - peorCasoAciertosEnPositive, cantidadModelo2FN)) * self.costoPositive + (peorCasoAciertosEnNegative + min(self.probFPcuandoP * cantidadNegativeTestM2 - peorCasoAciertosEnNegative, cantidadModelo2FP)) * self.costoNegative)
+        self.peorCasoSistema = float(self.peorCasoSistemaFN * self.costoPositive + self.peorCasoSistemaFP * self.costoNegative)

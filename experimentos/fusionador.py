@@ -4,13 +4,21 @@ import numpy as np
 
 
 def andFusionadorFalloDadoResultado2Promedio(probabilidadesPositive, probabilidadesNegative):
-    return  [probabilidadesPositive[1]/(probabilidadesPositive[1]+probabilidadesPositive[3]), 0, 1, probabilidadesNegative[0]/(probabilidadesNegative[0]+probabilidadesNegative[2])]
+    probFNcuandoP = probabilidadesPositive[1]/(probabilidadesPositive[1]+probabilidadesPositive[3]) if (probabilidadesPositive[1]+probabilidadesPositive[3]) > 0 else 0
+    probFPcuandoN = 0
+    probFNcuandoN = 1
+    probFPcuandoP = probabilidadesNegative[0]/(probabilidadesNegative[0]+probabilidadesNegative[2]) if (probabilidadesNegative[0]+probabilidadesNegative[2]) > 0 else 0
+    return  [probFNcuandoP, probFPcuandoN, probFNcuandoN, probFPcuandoP]
 
 
 
 
 def orFusionadorFalloDadoResultado2Promedio(probabilidadesPositive, probabilidadesNegative):
-    return  [0, probabilidadesNegative[1]/(probabilidadesNegative[1]+probabilidadesNegative[3]), probabilidadesPositive[0]/(probabilidadesPositive[0]+probabilidadesPositive[2]), 1]
+    probFNcuandoP = 0
+    probFPcuandoN = probabilidadesNegative[1]/(probabilidadesNegative[1]+probabilidadesNegative[3]) if (probabilidadesNegative[1]+probabilidadesNegative[3]) > 0 else 0
+    probFNcuandoN = probabilidadesPositive[0]/(probabilidadesPositive[0]+probabilidadesPositive[2]) if (probabilidadesPositive[0]+probabilidadesPositive[2]) > 0 else 0
+    probFPcuandoP = 1
+    return  [probFNcuandoP, probFPcuandoN, probFNcuandoN, probFPcuandoP]
 
 
 
