@@ -53,8 +53,10 @@ def computeJointBernoulliProbabilities(p, q, rho):
     if (p00 < 0 or p01 < 0 or p10 < 0 or p11 < 0):
         raise Exception('Computed probabilities include negative values; check inputs.')
 
-
     return [p00, p01, p10, p11]
+
+
+
 
 def validBernoulliJointProbabilityWithCorrelation(p, q):
     varX = p * (1 - p)
